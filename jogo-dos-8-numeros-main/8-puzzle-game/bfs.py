@@ -4,8 +4,8 @@ import time
 
 class Bfs(Game):
     def __init__(self):
-        super().__init__()
-        self.queue = Queue()
+        super().__init__() #inicializando a classe Game
+        self.queue = Queue() #inicializando uma fila (padrão do python)
 
     def checkFinal(self, node):
         if node == self.finalNode:

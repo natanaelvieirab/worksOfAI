@@ -2,20 +2,23 @@ import copy
 from .board import Board
 from random import choice
 
+
 class EightNumberBoard:
     def __init__(self):
-        self.size = 3
-        self.board = Board(self.size)
+        self.size = 3  # tamanho do tabuleiro
+        self.board = Board(self.size)  # criar um tabuleiro de tamanho 3x3,
 
-        numbers = list(range(0,9))
-        
+        numbers = list(range(0, 9))  # lista de números
+
         randomMatrix = []
         for i in range(self.size):
             randomMatrix.append([])
             for j in range(self.size):
+                # gera número aleatorio da lista de números
                 number = choice(numbers)
                 numbers.remove(number)
-                
+
+                # adiciona o número na linha, em qualquer coluna
                 randomMatrix[i].append(number)
 
         self.board.matrix = randomMatrix
@@ -24,22 +27,22 @@ class EightNumberBoard:
         return self.board.matrix
 
     def canMoveLeft(self, pos):
-        return pos != [0,3] and pos != [1,0] and pos != [2,0]
+        return pos != [0, 3] and pos != [1, 0] and pos != [2, 0]
 
     def canMoveRight(self, pos):
-        return pos != [0,2] and pos != [1,2] and pos != [2,2]
+        return pos != [0, 2] and pos != [1, 2] and pos != [2, 2]
 
     def canMoveBottom(self, pos):
-        return pos !=[2,0] and pos !=[2,1] and pos != [2,2]
+        return pos != [2, 0] and pos != [2, 1] and pos != [2, 2]
 
     def canMoveTop(self, pos):
-        return pos != [0, 0] and pos != [0,1] and pos != [0,2]
+        return pos != [0, 0] and pos != [0, 1] and pos != [0, 2]
 
     def top(self, node, i, j):
         upNode = copy.deepcopy(node)
         upNode[i][j] = upNode[i-1][j]
         upNode[i-1][j] = 0
-        
+
         return upNode
 
     def right(self, node, i, j):
@@ -55,13 +58,13 @@ class EightNumberBoard:
         leftNode[i][j-1] = 0
 
         return leftNode
-    
+
     def bottom(self, node, i, j):
         downNode = copy.deepcopy(node)
         downNode[i][j] = downNode[i+1][j]
         downNode[i+1][j] = 0
 
         return downNode
-    
+
     def __str__(self):
         return self.board.__str__()
