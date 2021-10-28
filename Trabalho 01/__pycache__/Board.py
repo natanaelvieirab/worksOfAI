@@ -5,6 +5,7 @@ from re import A
 class Board:
     def __init__(self, size=4):
         self.size = size
+        self.blankSimbol = 0
         self.finalState = list([])
         self.initialState = list([])
 
@@ -34,6 +35,9 @@ class Board:
 
         return finalState
 
+    def getInitialState(self):
+        return self.initialState
+
     def createInitialState(self):
         limitNumber = self.size**2
         listNumbers = list(range(0, limitNumber))
@@ -51,6 +55,9 @@ class Board:
                 boardRandom[i].append(number)
 
         return boardRandom
+
+    def getFinalState(self):
+        return self.finalState
 
     def printFinalState(self):
         matrizView = self.print(self.finalState)
@@ -78,6 +85,10 @@ class Board:
     def __str__(self):
         return self.printFinalState()
 
+    def getBlankSimbol(self):
+        return self.blankSimbol
 
-b = Board()
-print(b.printFinalState())
+
+# para testar
+#b = Board()
+# print(b)
