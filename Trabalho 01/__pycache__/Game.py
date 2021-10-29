@@ -1,11 +1,13 @@
 
-from Board import Board
+
+from __pycache__.Board import Board
 
 
 class Game(Board):
     def __init__(self):
         super().__init__()
         self.blankSimbol = super().getBlankSimbol()
+        self.boardSize = super().getBoardSize()
 
     def __str__(self):
         return super().__str__()
@@ -22,17 +24,50 @@ class Game(Board):
                     "column": line.index(self.blankSimbol)
                 }
 
-    def printNodeAndInformation(self, node, nodeNumber):
-        node = super().getInitialState()
-        view = super().print(node)
-        print("-------------------")
+    def printNodeAndInformation(self, node, nodeNumber="nonenenenen"):
+        super().print(node)
         print("Node nº: ", nodeNumber, "\n")
+        print("-------------------")
 
-        return view
+    # Verificando se pode realizar o movimento
+    def canMoveTop(self, **posBlankSimbol):
+        return (posBlankSimbol["line"] - 1) != -1
 
+    def canMoveRight(self, **posBlankSimbol):
+        return (posBlankSimbol["column"] + 1) != self.boardSize
 
-g = Game()
-# testando herança
-print(g.printInitialState())
-# print(g.getBlankPosition([]))
-print(g.printNodeAndInformation([], 212131))
+    def canMoveDown(self, **posBlankSimbol):
+        return (posBlankSimbol["line"] + 1) != self.boardSize
+
+    def canMoveLeft(self, **posBlankSimbol):
+        return (posBlankSimbol["column"] - 1) != -1
+
+    # Realizando o movimento para uma direção
+    def moveTop(self, node, **posBlankSimbol):
+        self._swap(node, posBlankSimbol["line"] - 1,
+                   posBlankSimbol["column"], **posBlankSimbol)
+
+    def moveRight(self, node, **posBlankSimbol):
+        self._swap(node, posBlankSimbol["line"],
+                   posBlankSimbol["column"] + 1, **posBlankSimbol)
+
+    def moveDown(self, node, **posBlankSimbol):
+        self._swap(node, posBlankSimbol["line"] + 1,
+                   posBlankSimbol["column"], **posBlankSimbol)
+
+    def moveLeft(self, node, **posBlankSimbol):
+        self._swap(node, posBlankSimbol["line"],
+                   posBlankSimbol["column"] - 1, **posBlankSimbol)
+
+    # Realizando a troca de posição
+    def _swap(self, node, lineValue, columnValue,  **kwargs):
+        line = kwargs["line"]
+        column = kwargs["column"]
+
+        value = node[lineValue][columnValue]
+        node[lineValue][columnValue] = self.blankSimbol
+        node[line][column] = value
+
+    # verificando se chegou a estado final
+    def isCheckIfFinalState(self, node):
+        return node == self.finalState
