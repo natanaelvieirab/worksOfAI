@@ -69,9 +69,8 @@ class Board:
 
         return matrizView
 
-    def print(self, matriz):
+    def print(self, board):
         matrizView = ""
-        board = matriz
 
         for i in range(0, self.size):
             linha = board[i]
@@ -80,7 +79,7 @@ class Board:
 
             matrizView += "\n"
 
-        return matrizView
+        print(matrizView)
 
     def __str__(self):
         return self.printFinalState()
@@ -88,7 +87,5 @@ class Board:
     def getBlankSimbol(self):
         return self.blankSimbol
 
-
-# para testar
-#b = Board()
-# print(b)
+    def getBoardSize(self):
+        return self.size
