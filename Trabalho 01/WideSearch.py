@@ -1,30 +1,34 @@
 from entity.Game import Game
 from entity.Position import Position
-from entity.utils.enums import Direction
 from queue import Queue
+from entity.utils.enums import Direction
 import time
 
 
 class DeepSearch:
     def __init__(self):
         self.game = Game()
-        self.queue = Queue()
+        self.checkQueue = Queue()
+        self.listVisited = list()
 
     def moveAndCheck(self, node, direction: Direction, positionBlankSymbol: Position) -> bool:
         nodeMoved = self.game.move(node, direction, positionBlankSymbol)
-        self.queue.put(nodeMoved)
 
         isFound = self.game.isCheckIfFinalState(nodeMoved)
-        self.game.printNodeAndInformation(nodeMoved)
+
+        if (nodeMoved not in self.listVisited):
+            self.checkQueue.put(nodeMoved)
+            self.listVisited.append(nodeMoved)
+            self.game.printNodeAndInformation(nodeMoved)
 
         return isFound
 
     def start(self):
 
-        initialState = self.game.getInitialState()
+        currentNode = self.game.getInitialState()
 
         print("tabuleiro Inicial:")
-        self.game.print(initialState)
+        self.game.print(currentNode)
         print(" --------------- ")
 
         time0 = time.time()
@@ -33,13 +37,12 @@ class DeepSearch:
             print("Este tabuleiro não possui solução!")
             return
 
-        self.queue.put(initialState)
-        isFound = self.game.isCheckIfFinalState(initialState)
+        self.checkQueue.put(currentNode)
+        isFound = self.game.isCheckIfFinalState(currentNode)
 
-        # i = 0
-        while(not isFound and not self.queue.empty()):
-            currentNode = self.queue.get()
-            positionBlankSymbol = self.game.getBlankPosition()
+        while(not isFound and not self.checkQueue.empty()):
+            currentNode = self.checkQueue.get()  # removendo o primeiro elemento da fila
+            positionBlankSymbol = self.game.getBlankPosition(currentNode)
 
             if(self.game.can_move(Direction.TOP, positionBlankSymbol)):
                 isFound = self.moveAndCheck(
@@ -60,7 +63,6 @@ class DeepSearch:
         time1 = time.time()
         # if(isFound):
         print("----Finalizado----")
-        self.game.print(currentNode)
         print(f"foram realizado {self.game.getCountMove()} movimentos!")
         print("Tempo de execucao: ", time1-time0)
         # else:
