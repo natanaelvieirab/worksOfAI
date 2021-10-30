@@ -1,5 +1,6 @@
 from entity.Game import Game
 from entity.utils.enums import Direction
+import time
 
 
 class DeepSearch:
@@ -20,6 +21,8 @@ class DeepSearch:
         print("tabuleiro Inicial:")
         self.game.print(initialState)
         print(" --------------- ")
+
+        time0 = time.time()
 
         if(not self.game.isSolvable()):
             print("Este tabuleiro não possui solução!")
@@ -44,10 +47,12 @@ class DeepSearch:
             if(self.game.can_move(Direction.LEFT) and not isFound):
                 isFound = self.moveAndCheck(currentNode, Direction.LEFT)
 
+        time1 = time.time()
         if(isFound):
             print("----Finalizado----")
             self.game.print(currentNode)
             print(f"foram realizado {self.game.getCountMove()} movimentos!")
+            print("Tempo de execucao: ", time1-time0)
         else:
             print("Não foi possivel encontrar uma solução para o problema")
 
