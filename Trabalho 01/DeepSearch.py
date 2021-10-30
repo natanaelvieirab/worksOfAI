@@ -6,42 +6,46 @@ class DeepSearch:
     def __init__(self):
         self.game = Game()
 
-    def start(self):
-        isFound = False
-        initialState = self.game.getInitialState()
-        finalState = self.game.getFinalState()
+    def moveAndCheck(self, currentNode, direction: Direction) -> bool:
+        self.game.move(currentNode, direction)
+        isFound = self.game.isCheckIfFinalState(currentNode)
+        self.game.printNodeAndInformation(currentNode)
 
-        self.game.printNodeAndInformation(initialState)
+        return isFound
+
+    def start(self):
+
+        initialState = self.game.getInitialState()
+
+        print("tabuleiro Inicial:")
+        self.game.print(initialState)
+        print(" --------------- ")
+
         currentNode = initialState
+        isFound = self.game.isCheckIfFinalState(currentNode)
+
         i = 0
         while(not isFound and i <= 1):
             i += 1
 
-            isFound = self.game.isCheckIfFinalState(currentNode)
-
             if(self.game.can_move(Direction.TOP)):
-                self.game.move(currentNode, Direction.TOP)
-                isFound = self.game.isCheckIfFinalState(currentNode)
-                self.game.printNodeAndInformation(currentNode)
+                isFound = self.moveAndCheck(currentNode, Direction.TOP)
 
             if(self.game.can_move(Direction.RIGHT) and not isFound):
-                self.game.move(currentNode, Direction.RIGHT)
-                isFound = self.game.isCheckIfFinalState(currentNode)
-                self.game.printNodeAndInformation(currentNode)
+                isFound = self.moveAndCheck(currentNode, Direction.RIGHT)
 
             if(self.game.can_move(Direction.DOWN) and not isFound):
-                self.game.move(currentNode, Direction.DOWN)
-                isFound = self.game.isCheckIfFinalState(currentNode)
-                self.game.printNodeAndInformation(currentNode)
+                isFound = self.moveAndCheck(currentNode, Direction.DOWN)
 
             if(self.game.can_move(Direction.LEFT) and not isFound):
-                self.game.move(currentNode, Direction.LEFT)
-                isFound = self.game.isCheckIfFinalState(currentNode)
-                self.game.printNodeAndInformation(currentNode)
+                isFound = self.moveAndCheck(currentNode, Direction.LEFT)
 
-             #isFound = self.game.isCheckIfFinalState(currentNode)
-
-            # self.game.printNodeAndInformation(currentNode)
+        if(isFound):
+            print("----Finalizado----")
+            self.game.print(currentNode)
+            print(f"foram realizado {self.game.getCountMove()} movimentos!")
+        else:
+            print("Não foi possivel encontrar uma solução para o problema")
 
 
 ds = DeepSearch()
