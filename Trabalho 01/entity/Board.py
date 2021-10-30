@@ -1,6 +1,7 @@
 from random import choice
 from re import A
-from utils.consts import BLANK_SYMBOL
+from utils.const import BLANK_SYMBOL
+
 
 class Board:
     def __init__(self, size=4):
@@ -30,7 +31,8 @@ class Board:
                 temp.append(0)
                 finalState.append(temp)
             else:
-                finalState.append(listNumbers[i:limit]) #acho que da para usar `range(i, limit+1)`
+                # acho que da para usar `range(i, limit+1)`
+                finalState.append(listNumbers[i:limit])
             count += 1
 
         return finalState
@@ -53,12 +55,10 @@ class Board:
         return boardRandom
 
     def printFinalState(self):
-        matrizView = self.print(self.finalState)
-        return matrizView
+        self.print(self.finalState)
 
     def printInitialState(self):
-        matrizView = self.print(self.initialState)
-        return matrizView
+        self.print(self.initialState)
 
     def print(self, board):
         matrizView = ""
