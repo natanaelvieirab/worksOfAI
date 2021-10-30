@@ -1,7 +1,5 @@
-
-
 from __pycache__.Board import Board
-
+from utils.consts import EMPTY_VALUE
 
 class Game(Board):
     def __init__(self):
@@ -15,7 +13,7 @@ class Game(Board):
     def getBlankPosition(self, node):
         length = len(node)
 
-        for i in range(0, self.size):
+        for i in range(self.boardSize):
             line = node[i]
 
             if(self.blankSimbol in line):
@@ -69,5 +67,31 @@ class Game(Board):
         node[line][column] = value
 
     # verificando se chegou a estado final
-    def isCheckIfFinalState(self, node):
+    def isCheckIfFinalState(self, node) -> bool:
         return node == self.finalState
+
+    def _is_inversion(self, value1: int, value2: int) -> bool:
+        """Verifica se é uma inversão."""
+        return value1 != EMPTY_VALUE and value2 != EMPTY_VALUE and value2 > value1
+
+    def get_inversions_number(self, arr: list) -> int:
+        """A partir de um array, obtem-se o número de inversões."""
+
+        # Transformar um arr(list) em um Board
+        inversions_count = 0
+
+        for i in range(self, len(arr)):
+            for j in range(i + 1, len(arr)):
+                if self.is_inversion(arr[j], arr[i]):
+                    inversions_count += 1
+        return inversions_count
+
+    def get_position_of_empty_value_from_bottom(self, puzzle: list) -> int:
+        """Procura pelo Empty_Value, iniciando a busca pela posição final (canto direito-inferior)."""
+
+        # Transformar um puzzle(list) em um Board
+        for i in range(self.boardSize - 1, -1, -1):
+            for j in range(self.boardSize - 1, -1, -1):
+                if puzzle[i, j] == EMPTY_VALUE:
+                    return self.boardSize - i # Verificar isso
+        return 0

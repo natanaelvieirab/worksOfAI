@@ -1,11 +1,11 @@
 from random import choice
 from re import A
-
+from utils.consts import EMPTY_VALUE
 
 class Board:
     def __init__(self, size=4):
         self.size = size
-        self.blankSimbol = 0
+        self.blankSimbol = EMPTY_VALUE
         self.finalState = list([])
         self.initialState = list([])
 
@@ -22,7 +22,7 @@ class Board:
         finalState = list()
         count = 1
 
-        for i in range(0, limitNumber, self.size):
+        for i in range(limitNumber, self.size):
             limit = self.size * count
 
             if(limit == limitNumber):
@@ -30,59 +30,55 @@ class Board:
                 temp.append(0)
                 finalState.append(temp)
             else:
-                finalState.append(listNumbers[i:limit])
+                finalState.append(listNumbers[i:limit]) #acho que da para usar `range(i, limit+1)`
             count += 1
 
         return finalState
 
-    def getInitialState(self):
-        return self.initialState
-
     def createInitialState(self):
         limitNumber = self.size**2
-        listNumbers = list(range(0, limitNumber))
+        listNumbers = list(range(limitNumber))
 
         boardRandom = list()
         count = 1
 
-        for i in range(0, self.size):
+        for i in range(self.size):
             boardRandom.append([])
 
-            for j in range(0, self.size):
+            for j in range(self.size):
                 number = choice(listNumbers)
                 listNumbers.remove(number)
-
                 boardRandom[i].append(number)
 
         return boardRandom
 
-    def getFinalState(self):
-        return self.finalState
-
     def printFinalState(self):
         matrizView = self.print(self.finalState)
-
         return matrizView
 
     def printInitialState(self):
         matrizView = self.print(self.initialState)
-
         return matrizView
 
     def print(self, board):
         matrizView = ""
 
-        for i in range(0, self.size):
+        for i in range(self.size):
             linha = board[i]
-            for j in range(0, self.size):
+            for j in range(self.size):
                 matrizView += "{} ".format(linha[j])
 
             matrizView += "\n"
-
         print(matrizView)
 
     def __str__(self):
         return self.printFinalState()
+
+    def getInitialState(self):
+        return self.initialState
+
+    def getFinalState(self):
+        return self.finalState
 
     def getBlankSimbol(self):
         return self.blankSimbol
