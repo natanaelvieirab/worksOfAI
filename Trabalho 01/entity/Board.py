@@ -14,7 +14,9 @@ class Board:
 
     def startBoard(self):
         self.finalState = self.createFinalState()
-        self.initialState = self.createInitialState()
+        # para afim de teste
+        self.initialState = [[7, 4, 3, 10], [11, 0, 12, 6], [
+            14, 1, 13, 9], [8, 2, 5, 15]]  # self.createInitialState()
 
     def createFinalState(self):
         limitNumber = self.size**2
