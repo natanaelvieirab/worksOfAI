@@ -10,22 +10,26 @@ class Game(Board):
         super().__init__()
         self.boardSize = super().getBoardSize()
         self.blankSimbol = super().getBlankSimbol()
-        self.blank_symbol_pos = self.getBlankPosition()
+        self.blank_symbol_pos = self.getBlankPosition(self.initialState)
         self.countMove = 0
 
     def __str__(self):
         return super().__str__()
 
-    def getBlankPosition(self) -> Position:
+    def getBlankPosition(self, node) -> Position:
 
         for i in range(0, self.boardSize):
-            line = self.initialState[i]
+            line = node[i]
 
             if(self.blankSimbol in line):
                 return Position(i, line.index(self.blankSimbol))
 
     def printNodeAndInformation(self, node):
+        """Exibir o nós únicos juntamente com sua representação numerica"""
+
         super().print(node)
+
+        self.countMove += 1
         print(f"Node nº: {self.countMove} \n")
         print("-------------------")
 
@@ -59,7 +63,6 @@ class Game(Board):
             column -= 1
 
         self._swap(nodeMoved, line, column, positionBlankSymbol)
-        self.countMove += 1
 
         return nodeMoved
 
@@ -67,8 +70,6 @@ class Game(Board):
 
         node[positionBlankSymbol.line][positionBlankSymbol.column] = node[lineValue][columnValue]
         node[lineValue][columnValue] = self.blankSimbol
-
-        #positionBlankSymbol.set_position(lineValue, columnValue)
 
     def getCountMove(self):
         return self.countMove
@@ -82,8 +83,8 @@ class Game(Board):
         numberInversions = self.get_inversions_number()
         position = self.get_position_of_empty_value_from_bottom()
 
-        print(f"numeros de inversões: {numberInversions}")
-        print(f"position: {position}")
+        #print(f"numeros de inversões: {numberInversions}")
+        #print(f"position: {position}")
 
         if self.boardSize % 2:
             return not numberInversions % 2
@@ -103,7 +104,6 @@ class Game(Board):
         inversions_count = 0
         elements_list = convert_board_in_list(self.initialState)
         length = len(elements_list)
-        print(elements_list)
 
         for i in range(length):
             for j in range(i + 1, length):
