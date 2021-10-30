@@ -1,4 +1,5 @@
 from entity.Game import Game
+from utils.enums import Direction
 
 
 class DeepSearch:
@@ -7,45 +8,40 @@ class DeepSearch:
 
     def start(self):
         isFound = False
-        initialState = [[7, 4, 3, 10], [11, 0, 12, 6], [
-            14, 1, 13, 9], [8, 2, 5, 15]]  # self.game.getInitialState()
+        initialState = self.game.getInitialState()
         finalState = self.game.getFinalState()
 
         self.game.printNodeAndInformation(initialState)
         currentNode = initialState
         i = 0
-        while(not isFound and i <= 3):
+        while(not isFound and i <= 1):
             i += 1
-            blankPosition = self.game.getBlankPosition(currentNode)
+
             isFound = self.game.isCheckIfFinalState(currentNode)
 
-            # if(isFound):
-            #     self.game.printNodeAndInformation(currentNode)
-            #     break
-
-            if(self.game.canMoveTop(**blankPosition)):
-                self.game.moveTop(currentNode, **blankPosition)
-                blankPosition = self.game.getBlankPosition(currentNode)
+            if(self.game.can_move(Direction.TOP)):
+                self.game.move(currentNode, Direction.TOP)
                 isFound = self.game.isCheckIfFinalState(currentNode)
+                self.game.printNodeAndInformation(currentNode)
 
-            if(self.game.canMoveRight(**blankPosition)):
-                self.game.moveRight(currentNode, **blankPosition)
-                blankPosition = self.game.getBlankPosition(currentNode)
+            if(self.game.can_move(Direction.RIGHT) and not isFound):
+                self.game.move(currentNode, Direction.RIGHT)
                 isFound = self.game.isCheckIfFinalState(currentNode)
+                self.game.printNodeAndInformation(currentNode)
 
-            if(self.game.canMoveDown(**blankPosition)):
-                self.game.moveDown(currentNode, **blankPosition)
-                blankPosition = self.game.getBlankPosition(currentNode)
+            if(self.game.can_move(Direction.DOWN) and not isFound):
+                self.game.move(currentNode, Direction.DOWN)
                 isFound = self.game.isCheckIfFinalState(currentNode)
+                self.game.printNodeAndInformation(currentNode)
 
-            if(self.game.canMoveLeft(**blankPosition)):
-                self.game.moveLeft(currentNode, **blankPosition)
-                blankPosition = self.game.getBlankPosition(currentNode)
+            if(self.game.can_move(Direction.LEFT) and not isFound):
+                self.game.move(currentNode, Direction.LEFT)
                 isFound = self.game.isCheckIfFinalState(currentNode)
+                self.game.printNodeAndInformation(currentNode)
 
              #isFound = self.game.isCheckIfFinalState(currentNode)
 
-            self.game.printNodeAndInformation(currentNode)
+            # self.game.printNodeAndInformation(currentNode)
 
 
 ds = DeepSearch()
