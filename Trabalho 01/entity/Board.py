@@ -13,9 +13,9 @@ class Board:
 
     def startBoard(self):
         self.finalState = self.createFinalState()
-        # para afim de teste
-        self.initialState = [[11, 13, 5, 0], [15, 1, 6, 14], [
-            4, 7, 3, 8], [10, 12, 2, 9]]  # self.createInitialState()
+        print("Estado inicial: ", self.finalState)
+
+        self.initialState = self.createInitialState()
 
     def createFinalState(self):
         limitNumber = self.size**2
@@ -24,7 +24,7 @@ class Board:
         finalState = list()
         count = 1
 
-        for i in range(limitNumber, self.size):
+        for i in range(0, limitNumber, self.size):
             limit = self.size * count
 
             if(limit == limitNumber):
@@ -32,7 +32,6 @@ class Board:
                 temp.append(0)
                 finalState.append(temp)
             else:
-                # acho que da para usar `range(i, limit+1)`
                 finalState.append(listNumbers[i:limit])
             count += 1
 
