@@ -10,6 +10,7 @@ class Game(Board):
         self.boardSize = super().getBoardSize()
         self.blankSimbol = super().getBlankSimbol()
         self.blank_symbol_pos = self.get_blank_position()
+        self.countMove = 0
 
     def __str__(self):
         return super().__str__()
@@ -22,9 +23,9 @@ class Game(Board):
             if(self.blankSimbol in line):
                 return Position(i, line.index(self.blankSimbol))
 
-    def printNodeAndInformation(self, node, nodeNumber="nonenenenen"):
+    def printNodeAndInformation(self, node):
         super().print(node)
-        print("Node nº: ", nodeNumber, "\n")
+        print(f"Node nº: {self.countMove} \n")
         print("-------------------")
 
     def can_move(self, direction: Direction) -> bool:
@@ -55,6 +56,7 @@ class Game(Board):
             column -= 1
 
         self._swap2(node, line, column)
+        self.countMove += 1
 
     def _swap2(self, node, lineValue: int, columnValue: int):
 
@@ -62,6 +64,9 @@ class Game(Board):
         node[lineValue][columnValue] = self.blankSimbol
 
         self.blank_symbol_pos.set_position(lineValue, columnValue)
+
+    def getCountMove(self):
+        return self.countMove
 
     # verificando se chegou a estado final
 
