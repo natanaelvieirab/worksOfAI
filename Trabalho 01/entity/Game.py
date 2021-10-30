@@ -1,3 +1,4 @@
+import copy
 from entity.Board import Board
 from entity.Position import Position
 from entity.utils.enums import Direction
@@ -9,13 +10,13 @@ class Game(Board):
         super().__init__()
         self.boardSize = super().getBoardSize()
         self.blankSimbol = super().getBlankSimbol()
-        self.blank_symbol_pos = self.get_blank_position()
+        self.blank_symbol_pos = self.getBlankPosition()
         self.countMove = 0
 
     def __str__(self):
         return super().__str__()
 
-    def get_blank_position(self) -> Position:
+    def getBlankPosition(self) -> Position:
 
         for i in range(0, self.boardSize):
             line = self.initialState[i]
@@ -29,23 +30,24 @@ class Game(Board):
         print("-------------------")
 
     # referente ao movimento no simbolo branco
-    def can_move(self, direction: Direction) -> bool:
+    def can_move(self, direction: Direction, positionBlankSymbol: Position) -> bool:
         """Verifica se a peça em branco pode ser movida na direção indicada."""
 
         if direction == Direction.TOP:
-            return self.blank_symbol_pos.line > 0
+            return positionBlankSymbol.line > 0
         elif direction == Direction.RIGHT:
-            return self.blank_symbol_pos.column < (self.boardSize - 1)
+            return positionBlankSymbol.column < (self.boardSize - 1)
         elif direction == Direction.DOWN:
-            return self.blank_symbol_pos.line < (self.boardSize - 1)
+            return positionBlankSymbol.line < (self.boardSize - 1)
         else:
-            return self.blank_symbol_pos.column > 0
+            return positionBlankSymbol.column > 0
 
-    def move(self, node, direction: Direction):
+    def move(self, node, direction: Direction, positionBlankSymbol: Position):
         """Move peça em branco na direção indicada."""
 
-        line = self.blank_symbol_pos.line
-        column = self.blank_symbol_pos.column
+        line = positionBlankSymbol.line
+        column = positionBlankSymbol.column
+        nodeMoved = copy.deepcopy(node)
 
         if direction == Direction.TOP:
             line -= 1
@@ -56,15 +58,17 @@ class Game(Board):
         else:
             column -= 1
 
-        self._swap(node, line, column)
+        self._swap(nodeMoved, line, column, positionBlankSymbol)
         self.countMove += 1
 
-    def _swap(self, node, lineValue: int, columnValue: int):
+        return nodeMoved
 
-        node[self.blank_symbol_pos.line][self.blank_symbol_pos.column] = node[lineValue][columnValue]
+    def _swap(self, node, lineValue: int, columnValue: int, positionBlankSymbol: Position):
+
+        node[positionBlankSymbol.line][positionBlankSymbol.column] = node[lineValue][columnValue]
         node[lineValue][columnValue] = self.blankSimbol
 
-        self.blank_symbol_pos.set_position(lineValue, columnValue)
+        #positionBlankSymbol.set_position(lineValue, columnValue)
 
     def getCountMove(self):
         return self.countMove
