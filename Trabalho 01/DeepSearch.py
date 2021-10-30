@@ -1,4 +1,4 @@
-from __pycache__.Game import Game
+from entity.Game import Game
 
 
 class DeepSearch:
