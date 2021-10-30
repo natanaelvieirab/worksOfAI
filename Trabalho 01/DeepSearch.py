@@ -1,5 +1,5 @@
 from entity.Game import Game
-from utils.enums import Direction
+from entity.utils.enums import Direction
 
 
 class DeepSearch:
@@ -20,6 +20,10 @@ class DeepSearch:
         print("tabuleiro Inicial:")
         self.game.print(initialState)
         print(" --------------- ")
+
+        if(not self.game.isSolvable()):
+            print("Este tabuleiro não possui solução!")
+            return
 
         currentNode = initialState
         isFound = self.game.isCheckIfFinalState(currentNode)

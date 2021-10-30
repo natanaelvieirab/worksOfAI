@@ -1,6 +1,5 @@
 from random import choice
-from re import A
-from utils.const import BLANK_SYMBOL
+from entity.utils.const import BLANK_SYMBOL
 
 
 class Board:
@@ -15,8 +14,8 @@ class Board:
     def startBoard(self):
         self.finalState = self.createFinalState()
         # para afim de teste
-        self.initialState = [[7, 4, 3, 10], [11, 0, 12, 6], [
-            14, 1, 13, 9], [8, 2, 5, 15]]  # self.createInitialState()
+        self.initialState = [[11, 13, 5, 0], [15, 1, 6, 14], [
+            4, 7, 3, 8], [10, 12, 2, 9]]  # self.createInitialState()
 
     def createFinalState(self):
         limitNumber = self.size**2
