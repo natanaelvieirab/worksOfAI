@@ -2,13 +2,14 @@ from entity.Board import Board
 from entity.Position import Position
 from utils.consts import BLANK_SYMBOL
 from utils.enums import Direction
+from utils.functions import convert_board_in_list
 
 class Game(Board):
     def __init__(self):
         super().__init__()
         self.boardSize = super().getBoardSize()
         self.blankSimbol = super().getBlankSimbol()
-        self.blank_symbol_pos = self.getBlankPosition2()
+        self.blank_symbol_pos = self.get_blank_position()
 
     def __str__(self):
         return super().__str__()
@@ -25,12 +26,10 @@ class Game(Board):
                     "column": line.index(self.blankSimbol)
                 }
 
-    def getBlankPosition2(self):
-        board = self.getInitialState()
-
+    def get_blank_position(self):
         for i in range(self.boardSize):
             for j in range(self.boardSize):
-                if(board[i][j] == BLANK_SYMBOL):
+                if(self.initialState[i][j] == BLANK_SYMBOL):
                     return Position(i, j)
 
     def printNodeAndInformation(self, node, nodeNumber="nonenenenen"):
@@ -48,19 +47,6 @@ class Game(Board):
             return self.blank_symbol_pos.line < (self.boardSize - 1)
         else:
             return self.blank_symbol_pos.column > 0
-
-    # Verificando se pode realizar o movimento
-    def canMoveTop(self, **posBlankSimbol):
-        return (posBlankSimbol["line"] - 1) != -1
-
-    def canMoveRight(self, **posBlankSimbol):
-        return (posBlankSimbol["column"] + 1) != self.boardSize
-
-    def canMoveDown(self, **posBlankSimbol):
-        return (posBlankSimbol["line"] + 1) != self.boardSize
-
-    def canMoveLeft(self, **posBlankSimbol):
-        return (posBlankSimbol["column"] - 1) != -1
 
     def move(self, direction: Direction, node) -> bool:
         """Move peça em branco na direção indicada."""
@@ -82,6 +68,19 @@ class Game(Board):
         node[self.blank_symbol_pos.line][self.blank_symbol_pos.column] = node[line][column]
         node[line][column] = BLANK_SYMBOL
         self.blank_symbol_pos.set_position(line, column)
+
+    # Verificando se pode realizar o movimento
+    def canMoveTop(self, **posBlankSimbol):
+        return (posBlankSimbol["line"] - 1) != -1
+
+    def canMoveRight(self, **posBlankSimbol):
+        return (posBlankSimbol["column"] + 1) != self.boardSize
+
+    def canMoveDown(self, **posBlankSimbol):
+        return (posBlankSimbol["line"] + 1) != self.boardSize
+
+    def canMoveLeft(self, **posBlankSimbol):
+        return (posBlankSimbol["column"] - 1) != -1
 
     # Realizando o movimento para uma direção
     def moveTop(self, node, **posBlankSimbol):
@@ -111,15 +110,27 @@ class Game(Board):
 
     def _is_inversion(self, value1: int, value2: int) -> bool:
         """Verifica se é uma inversão."""
-        return value1 != BLANK_SYMBOL and value2 != BLANK_SYMBOL and value2 > value1
+        return value1 != BLANK_SYMBOL and value2 != BLANK_SYMBOL and value1 < value2
+    
+    def get_inversions_number2(self) -> int:
+        """Obtem-se o número de inversões de elementos no board."""
+        inversions_count = 0
+        elements_list = convert_board_in_list(self.initialState)
+
+        for i in range(self.size):
+            for j in range(i + 1, self.size):
+                if self.is_inversion(elements_list[j], elements_list[i]):
+                    inversions_count += 1
+        return inversions_count
 
     def get_inversions_number(self, arr: list) -> int:
-        """A partir de um array, obtem-se o número de inversões."""
+        """Obtem-se o número de inversões de elementos no board."""
 
+        self.initialState
         # Transformar um arr(list) em um Board
         inversions_count = 0
 
-        for i in range(self, len(arr)):
+        for i in range(len(arr)):
             for j in range(i + 1, len(arr)):
                 if self.is_inversion(arr[j], arr[i]):
                     inversions_count += 1
@@ -134,3 +145,7 @@ class Game(Board):
                 if puzzle[i][j] == BLANK_SYMBOL:
                     return self.boardSize - i # Verificar isso
         return 0
+
+    def get_position_of_empty_value_from_bottom2(self) -> int:
+        """Procura pelo Empty_Value, iniciando a busca pela posição final (canto direito-inferior)."""
+        return self.boardSize - self.blank_symbol_pos.line
