@@ -1,7 +1,7 @@
 from entity.Board import Board
 from entity.Position import Position
-from utils.enums import Direction
-from utils.functions import convert_board_in_list
+from entity.utils.enums import Direction
+from entity.utils.functions import convert_board_in_list
 
 
 class Game(Board):
@@ -28,6 +28,7 @@ class Game(Board):
         print(f"Node nº: {self.countMove} \n")
         print("-------------------")
 
+    # referente ao movimento no simbolo branco
     def can_move(self, direction: Direction) -> bool:
         """Verifica se a peça em branco pode ser movida na direção indicada."""
 
@@ -55,10 +56,10 @@ class Game(Board):
         else:
             column -= 1
 
-        self._swap2(node, line, column)
+        self._swap(node, line, column)
         self.countMove += 1
 
-    def _swap2(self, node, lineValue: int, columnValue: int):
+    def _swap(self, node, lineValue: int, columnValue: int):
 
         node[self.blank_symbol_pos.line][self.blank_symbol_pos.column] = node[lineValue][columnValue]
         node[lineValue][columnValue] = self.blankSimbol
@@ -69,49 +70,58 @@ class Game(Board):
         return self.countMove
 
     # verificando se chegou a estado final
-
     def isCheckIfFinalState(self, node) -> bool:
         return node == self.finalState
+
+    # verificando se o tabuleiro gerado possui solucao
+    def isSolvable(self) -> bool:
+        numberInversions = self.get_inversions_number()
+        position = self.get_position_of_empty_value_from_bottom()
+
+        print(f"numeros de inversões: {numberInversions}")
+        print(f"position: {position}")
+
+        if self.boardSize % 2:
+            return not numberInversions % 2
+        else:
+            if position % 2:
+                return not numberInversions % 2
+            else:
+                return numberInversions % 2
 
     def _is_inversion(self, value1: int, value2: int) -> bool:
         """Verifica se é uma inversão."""
         return value1 != self.blankSimbol and value2 != self.blankSimbol and value1 < value2
 
-    def get_inversions_number2(self) -> int:
+    def get_inversions_number(self) -> int:
         """Obtem-se o número de inversões de elementos no board."""
 
         inversions_count = 0
         elements_list = convert_board_in_list(self.initialState)
+        length = len(elements_list)
+        print(elements_list)
 
-        for i in range(self.size):
-            for j in range(i + 1, self.size):
-                if self.is_inversion(elements_list[j], elements_list[i]):
+        for i in range(length):
+            for j in range(i + 1, length):
+                if self._is_inversion(elements_list[j], elements_list[i]):
                     inversions_count += 1
+
         return inversions_count
 
-    def get_inversions_number(self, arr: list) -> int:
-        """Obtem-se o número de inversões de elementos no board."""
-
-        self.initialState
-        # Transformar um arr(list) em um Board
-        inversions_count = 0
-
-        for i in range(len(arr)):
-            for j in range(i + 1, len(arr)):
-                if self.is_inversion(arr[j], arr[i]):
-                    inversions_count += 1
-        return inversions_count
-
-    def get_position_of_empty_value_from_bottom(self, puzzle: list) -> int:
+    def get_position_of_empty_value_from_bottom(self) -> int:
         """Procura pelo Empty_Value, iniciando a busca pela posição final (canto direito-inferior)."""
-
-        # Transformar um puzzle(list) em um Board
-        for i in range(self.boardSize - 1, -1, -1):
-            for j in range(self.boardSize - 1, -1, -1):
-                if puzzle[i][j] == self.blankSimbol:
-                    return self.boardSize - i  # Verificar isso
-        return 0
-
-    def get_position_of_empty_value_from_bottom2(self) -> int:
-        """Procura pelo Empty_Value, iniciando a busca pela posição final (canto direito-inferior)."""
+        # forma resumida
         return self.boardSize - self.blank_symbol_pos.line
+
+
+# só será verdade quando esse arquivo for executado
+# LEMBRETE: Ao rodar localmente, remover o "entity" nas importações,
+# e apos rodar, coloque-o de volta
+
+if __name__ == "__main__":
+    game = Game()
+    board = [[7, 4, 3, 10], [11, 0, 12, 6], [
+        14, 1, 13, 9], [8, 2, 5, 15]]
+
+    # print(game.get_position_of_empty_value_from_bottom())
+    print(game.isSolvable())
