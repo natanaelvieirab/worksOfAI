@@ -16,7 +16,7 @@ class Game(Board):
 
     def get_blank_position(self) -> Position:
 
-        for i in range(self.boardSize):
+        for i in range(0, self.boardSize):
             line = self.initialState[i]
 
             if(self.blankSimbol in line):
@@ -29,6 +29,7 @@ class Game(Board):
 
     def can_move(self, direction: Direction) -> bool:
         """Verifica se a peça em branco pode ser movida na direção indicada."""
+
         if direction == Direction.TOP:
             return self.blank_symbol_pos.line > 0
         elif direction == Direction.RIGHT:
@@ -38,8 +39,9 @@ class Game(Board):
         else:
             return self.blank_symbol_pos.column > 0
 
-    def move(self, direction: Direction, node) -> bool:
+    def move(self, node, direction: Direction):
         """Move peça em branco na direção indicada."""
+
         line = self.blank_symbol_pos.line
         column = self.blank_symbol_pos.column
 
@@ -55,6 +57,7 @@ class Game(Board):
         self._swap2(node, line, column)
 
     def _swap2(self, node, lineValue: int, columnValue: int):
+
         node[self.blank_symbol_pos.line][self.blank_symbol_pos.column] = node[lineValue][columnValue]
         node[lineValue][columnValue] = self.blankSimbol
 
@@ -71,6 +74,7 @@ class Game(Board):
 
     def get_inversions_number2(self) -> int:
         """Obtem-se o número de inversões de elementos no board."""
+
         inversions_count = 0
         elements_list = convert_board_in_list(self.initialState)
 
