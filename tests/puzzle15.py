@@ -1,11 +1,11 @@
-from consts import EMPTY_VALUE
+from consts import BLANK_SYMBOL
 from functions import is_odd
 
 DIMENSIONS = 4 # dimensão 4 => 4*4 = 16 
 
 def is_inversion(value1: int, value2: int):
     """Verifica se é uma inversão."""
-    return value1 != EMPTY_VALUE and value2 != EMPTY_VALUE and value2 > value1
+    return value1 != BLANK_SYMBOL and value2 != BLANK_SYMBOL and value2 > value1
 
 def get_inversions_number(arr: list):
     """A partir de um array, obtem-se o número de inversões."""
@@ -34,7 +34,7 @@ def get_position_of_empty_value_from_bottom(puzzle: list) -> int:
     """Procura pelo Empty_Value, iniciando a busca pela posição final (canto direito-inferior)."""
     for i in range(DIMENSIONS - 1, -1, -1):
         for j in range(DIMENSIONS - 1, -1, -1):
-            if puzzle[i, j] == EMPTY_VALUE:
+            if puzzle[i, j] == BLANK_SYMBOL:
                 return DIMENSIONS - i # Tem que corrigir isso
     return 0
 

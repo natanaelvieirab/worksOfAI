@@ -1,11 +1,11 @@
 from random import choice
 from re import A
-from utils.consts import EMPTY_VALUE
+from utils.consts import BLANK_SYMBOL
 
 class Board:
     def __init__(self, size=4):
         self.size = size
-        self.blankSimbol = EMPTY_VALUE
+        self.blankSimbol = BLANK_SYMBOL
         self.finalState = list([])
         self.initialState = list([])
 
