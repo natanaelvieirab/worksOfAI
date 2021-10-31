@@ -6,8 +6,8 @@ from entity.utils.functions import convert_board_in_list
 
 
 class Game(Board):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, initialBoard=[]):
+        super().__init__(initialBoard)
         self.boardSize = super().getBoardSize()
         self.blankSimbol = super().getBlankSimbol()
         self.blank_symbol_pos = self.getBlankPosition(self.initialState)

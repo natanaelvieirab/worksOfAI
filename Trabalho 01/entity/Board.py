@@ -3,11 +3,13 @@ from entity.utils.const import BLANK_SYMBOL
 
 
 class Board:
-    def __init__(self, size=4):
+    def __init__(self, initialState=[], size=4):
         self.size = size
         self.blankSimbol = BLANK_SYMBOL
         self.finalState = list([])
-        self.initialState = list([])
+
+        if(initialState == []):
+            self.initialState = list([])
 
         self.startBoard()
 
@@ -15,7 +17,8 @@ class Board:
         self.finalState = self.createFinalState()
         print("Estado inicial: ", self.finalState)
 
-        self.initialState = self.createInitialState()
+        if(self.initialState == []):
+            self.initialState = self.createInitialState()
 
     def createFinalState(self):
         limitNumber = self.size**2
