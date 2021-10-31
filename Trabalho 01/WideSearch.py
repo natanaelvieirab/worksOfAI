@@ -1,11 +1,11 @@
+from queue import Queue
 from entity.Game import Game
 from entity.Position import Position
-from queue import Queue
 from entity.utils.enums import Direction
 import time
 
 
-class DeepSearch:
+class WideSearch:
     def __init__(self):
         self.game = Game()
         self.checkQueue = Queue()
@@ -33,11 +33,12 @@ class DeepSearch:
 
         time0 = time.time()
 
-        if(not self.game.isSolvable()):
-            print("Este tabuleiro não possui solução!")
-            return
+        # if(not self.game.isSolvable()):
+        #     print("Este tabuleiro não possui solução!")
+        #     return
 
         self.checkQueue.put(currentNode)
+        self.listVisited.append(currentNode)
         isFound = self.game.isCheckIfFinalState(currentNode)
 
         while(not isFound and not self.checkQueue.empty()):
@@ -69,5 +70,5 @@ class DeepSearch:
         #     print("Não foi possivel encontrar uma solução para o problema")
 
 
-ds = DeepSearch()
+ds = WideSearch()
 ds.start()
