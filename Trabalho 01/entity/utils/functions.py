@@ -1,4 +1,4 @@
-def is_odd(value: int):
+def isOdd(value: int):
     return value % 2 == 1
 
 
