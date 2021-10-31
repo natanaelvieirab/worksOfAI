@@ -1,3 +1,4 @@
+from queue import Queue
 from entity.Game import Game
 from entity.utils.enums import Direction
 import time
@@ -6,20 +7,30 @@ import time
 class DeepSearch:
     def __init__(self):
         self.game = Game()
+        self.checkStack = []
+        self.listVisited = list()
+        self.index = 0
 
-    def moveAndCheck(self, currentNode, direction: Direction) -> bool:
-        self.game.move(currentNode, direction)
-        isFound = self.game.isCheckIfFinalState(currentNode)
-        self.game.printNodeAndInformation(currentNode)
+    def moveAndCheck(self, node, direction: Direction, positionBlankSymbol: Position) -> bool:
+        nodeMoved = self.game.move(node, direction, positionBlankSymbol)
+
+        isFound = self.game.isCheckIfFinalState(nodeMoved)
+
+        if (nodeMoved not in self.listVisited):
+            self.checkStack.insert(self.index, nodeMoved)
+            self.index += 1
+
+            self.listVisited.append(nodeMoved)
+            self.game.printNodeAndInformation(nodeMoved)
 
         return isFound
 
     def start(self):
 
-        initialState = self.game.getInitialState()
+        currentNode = self.game.getInitialState()
 
         print("tabuleiro Inicial:")
-        self.game.print(initialState)
+        self.game.print(currentNode)
         print(" --------------- ")
 
         time0 = time.time()
@@ -28,33 +39,37 @@ class DeepSearch:
             print("Este tabuleiro não possui solução!")
             return
 
-        currentNode = initialState
+        self.checkStack.append(currentNode)
         isFound = self.game.isCheckIfFinalState(currentNode)
 
-        i = 0
-        while(not isFound and i <= 1):
-            i += 1
+        while(not isFound and not len(self.checkStack) == 0):
+            # removendo o primeiro elemento da fila
+            currentNode = self.checkStack.pop(0)
+            positionBlankSymbol = self.game.getBlankPosition(currentNode)
 
-            if(self.game.can_move(Direction.TOP)):
-                isFound = self.moveAndCheck(currentNode, Direction.TOP)
+            if(self.game.can_move(Direction.TOP, positionBlankSymbol)):
+                isFound = self.moveAndCheck(
+                    currentNode, Direction.TOP, positionBlankSymbol)
 
-            if(self.game.can_move(Direction.RIGHT) and not isFound):
-                isFound = self.moveAndCheck(currentNode, Direction.RIGHT)
+            if(self.game.can_move(Direction.RIGHT, positionBlankSymbol) and not isFound):
+                isFound = self.moveAndCheck(
+                    currentNode, Direction.RIGHT, positionBlankSymbol)
 
-            if(self.game.can_move(Direction.DOWN) and not isFound):
-                isFound = self.moveAndCheck(currentNode, Direction.DOWN)
+            if(self.game.can_move(Direction.DOWN, positionBlankSymbol) and not isFound):
+                isFound = self.moveAndCheck(
+                    currentNode, Direction.DOWN, positionBlankSymbol)
 
-            if(self.game.can_move(Direction.LEFT) and not isFound):
-                isFound = self.moveAndCheck(currentNode, Direction.LEFT)
+            if(self.game.can_move(Direction.LEFT, positionBlankSymbol) and not isFound):
+                isFound = self.moveAndCheck(
+                    currentNode, Direction.LEFT, positionBlankSymbol)
 
         time1 = time.time()
-        if(isFound):
-            print("----Finalizado----")
-            self.game.print(currentNode)
-            print(f"foram realizado {self.game.getCountMove()} movimentos!")
-            print("Tempo de execucao: ", time1-time0)
-        else:
-            print("Não foi possivel encontrar uma solução para o problema")
+        # if(isFound):
+        print("----Finalizado----")
+        print(f"foram realizado {self.game.getCountMove()} movimentos!")
+        print("Tempo de execucao: ", time1-time0)
+        # else:
+        #     print("Não foi possivel encontrar uma solução para o problema")
 
 
 ds = DeepSearch()
