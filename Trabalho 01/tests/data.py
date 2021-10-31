@@ -29,7 +29,7 @@ data = [
         ]),
     },
     {
-        isSolvable: True,
+        isSolvable: False,
         board: Game([
             [3, 9, 1, 15],
             [14, 11, 4, 6],

@@ -2,6 +2,7 @@ import copy
 from entity.Board import Board
 from entity.Position import Position
 from entity.utils.enums import Direction
+from entity.utils.functions import isOdd
 from entity.utils.functions import convert_board_in_list
 
 
@@ -83,16 +84,13 @@ class Game(Board):
         numberInversions = self.get_inversions_number()
         position = self.get_position_of_empty_value_from_bottom()
 
-        #print(f"numeros de inversões: {numberInversions}")
-        #print(f"position: {position}")
-
-        if self.boardSize % 2:
-            return not numberInversions % 2
+        if isOdd(self.boardSize):
+            return not isOdd(numberInversions)
         else:
-            if position % 2:
-                return not numberInversions % 2
+            if isOdd(position):
+                return not isOdd(numberInversions)
             else:
-                return numberInversions % 2
+                return isOdd(numberInversions)
 
     def _is_inversion(self, value1: int, value2: int) -> bool:
         """Verifica se é uma inversão."""
