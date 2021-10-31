@@ -1,5 +1,6 @@
 from queue import Queue
 from entity.Game import Game
+from entity.Position import Position
 from entity.utils.enums import Direction
 import time
 
@@ -35,17 +36,19 @@ class DeepSearch:
 
         time0 = time.time()
 
-        if(not self.game.isSolvable()):
-            print("Este tabuleiro não possui solução!")
-            return
+        # if(not self.game.isSolvable()):
+        #     print("Este tabuleiro não possui solução!")
+        #     return
 
         self.checkStack.append(currentNode)
         isFound = self.game.isCheckIfFinalState(currentNode)
+        POSITION_INITIAL = 0
 
-        while(not isFound and not len(self.checkStack) == 0):
-            # removendo o primeiro elemento da fila
-            currentNode = self.checkStack.pop(0)
+        while(not isFound and len(self.checkStack) != 0):
+            currentNode = self.checkStack.pop(POSITION_INITIAL)
             positionBlankSymbol = self.game.getBlankPosition(currentNode)
+
+            self.index = 0
 
             if(self.game.can_move(Direction.TOP, positionBlankSymbol)):
                 isFound = self.moveAndCheck(
