@@ -11,7 +11,7 @@ class Game(Board):
         super().__init__(initialBoard)
         self.boardSize = super().getBoardSize()
         self.blankSimbol = super().getBlankSimbol()
-        self.blank_symbol_pos = self.getBlankPosition(self.initialState)
+        self.positionBlankSymbol = self.getBlankPosition(self.initialState)
         self.countMove = 0
 
     def __str__(self):
@@ -35,9 +35,9 @@ class Game(Board):
         print("-------------------")
 
     # referente ao movimento no simbolo branco
-    def can_move(self, direction: Direction, positionBlankSymbol: Position) -> bool:
+    def can_move(self, direction: Direction, positionBlankSymbol: Position = None) -> bool:
         """Verifica se a peça em branco pode ser movida na direção indicada."""
-
+        
         if direction == Direction.TOP:
             return positionBlankSymbol.line > 0
         elif direction == Direction.RIGHT:
@@ -47,7 +47,7 @@ class Game(Board):
         else:
             return positionBlankSymbol.column > 0
 
-    def move(self, node, direction: Direction, positionBlankSymbol: Position):
+    def move(self, node, direction: Direction, positionBlankSymbol: Position = None):
         """Move peça em branco na direção indicada."""
 
         line = positionBlankSymbol.line
@@ -113,7 +113,7 @@ class Game(Board):
     def get_position_of_empty_value_from_bottom(self) -> int:
         """Procura pelo Empty_Value, iniciando a busca pela posição final (canto direito-inferior)."""
         # forma resumida
-        return self.boardSize - self.blank_symbol_pos.line
+        return self.boardSize - self.positionBlankSymbol.line
 
 
 # só será verdade quando esse arquivo for executado
@@ -122,8 +122,12 @@ class Game(Board):
 
 if __name__ == "__main__":
     game = Game()
-    board = [[7, 4, 3, 10], [11, 0, 12, 6], [
-        14, 1, 13, 9], [8, 2, 5, 15]]
+    board = [
+        [7, 4, 3, 10], 
+        [11, 0, 12, 6], 
+        [14, 1, 13, 9], 
+        [8, 2, 5, 15]
+    ]
 
     # print(game.get_position_of_empty_value_from_bottom())
     print(game.isSolvable())

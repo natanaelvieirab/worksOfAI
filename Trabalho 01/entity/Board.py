@@ -8,14 +8,13 @@ class Board:
         self.blankSimbol = BLANK_SYMBOL
         self.finalState = list([])
 
-        if(initialState == []):
-            self.initialState = list([])
+        self.initialState = initialState or list([])
 
         self.startBoard()
 
     def startBoard(self):
         self.finalState = self.createFinalState()
-        print("Estado inicial: ", self.finalState)
+        print("Estado Final: ", self.finalState)
 
         if(self.initialState == []):
             self.initialState = self.createInitialState()
