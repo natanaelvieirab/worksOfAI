@@ -6,8 +6,8 @@ import time
 
 
 class WideSearch:
-    def __init__(self):
-        self.game = Game()
+    def __init__(self, initialBoard=[]):
+        self.game = Game(initialBoard)
         self.checkQueue = Queue()
         self.listVisited = list()
 
@@ -33,9 +33,9 @@ class WideSearch:
 
         time0 = time.time()
 
-        # if(not self.game.isSolvable()):
-        #     print("Este tabuleiro não possui solução!")
-        #     return
+        if(not self.game.isSolvable()):
+            print("Este tabuleiro não possui solução!")
+            return
 
         self.checkQueue.put(currentNode)
         self.listVisited.append(currentNode)
@@ -62,13 +62,42 @@ class WideSearch:
                     currentNode, Direction.LEFT, positionBlankSymbol)
 
         time1 = time.time()
-        # if(isFound):
+
         print("----Finalizado----")
         print(f"foram realizado {self.game.getCountMove()} movimentos!")
         print("Tempo de execucao: ", time1-time0)
-        # else:
-        #     print("Não foi possivel encontrar uma solução para o problema")
 
 
-ds = WideSearch()
-ds.start()
+ws = WideSearch([
+    [1, 2, 3, 4],
+    [13, 6, 8, 12],
+    [5, 9, 0, 7],
+    [14, 11, 10, 15]
+])
+ws.start()
+
+'''
+Relatorio de busca:
+    entrada: 
+        [
+            [1, 2, 3, 4],
+            [5, 6, 8, 12],
+            [13, 9, 0, 7],
+            [14, 11, 10, 15]
+        ],
+    > Tempo de execução: 30.70090365409851
+    > Nos visitados: 17277
+    --------------------------------------
+    entrada: 
+        [
+            [1, 2, 3, 4],
+            [13, 6, 8, 12],
+            [5, 9, 0, 7],
+            [14, 11, 10, 15]
+        ],
+    > Tempo de execução:0
+    > Nos visitados: 0
+    Não possui solução
+    --------------------------------------
+
+'''
