@@ -1,7 +1,8 @@
 from queue import Queue
 from entity.Game import Game
 from entity.Position import Position
-from entity.utils.enums import Direction
+from utils.BoardUtil import BoardUtil
+from utils.enums import Direction
 import time
 
 
@@ -12,8 +13,8 @@ class DeepSearch:
         self.listVisited = list()
         self.index = 0
 
-    def moveAndCheck(self, node, direction: Direction, positionBlankSymbol: Position) -> bool:
-        nodeMoved = self.game.move(node, direction, positionBlankSymbol)
+    def moveAndCheck(self, node, direction: Direction) -> bool:
+        nodeMoved = BoardUtil.move(node, direction)
 
         isFound = self.game.isCheckIfFinalState(nodeMoved)
 
@@ -50,21 +51,21 @@ class DeepSearch:
 
             self.index = 0
 
-            if(self.game.can_move(Direction.TOP, positionBlankSymbol)):
+            if(BoardUtil.can_move(currentNode, Direction.TOP)):
                 isFound = self.moveAndCheck(
-                    currentNode, Direction.TOP, positionBlankSymbol)
+                    currentNode, Direction.TOP)
 
-            if(self.game.can_move(Direction.RIGHT, positionBlankSymbol) and not isFound):
+            if(BoardUtil.can_move(currentNode, Direction.RIGHT) and not isFound):
                 isFound = self.moveAndCheck(
-                    currentNode, Direction.RIGHT, positionBlankSymbol)
+                    currentNode, Direction.RIGHT)
 
-            if(self.game.can_move(Direction.DOWN, positionBlankSymbol) and not isFound):
+            if(BoardUtil.can_move(currentNode, Direction.DOWN) and not isFound):
                 isFound = self.moveAndCheck(
-                    currentNode, Direction.DOWN, positionBlankSymbol)
+                    currentNode, Direction.DOWN)
 
-            if(self.game.can_move(Direction.LEFT, positionBlankSymbol) and not isFound):
+            if(BoardUtil.can_move(currentNode, Direction.LEFT) and not isFound):
                 isFound = self.moveAndCheck(
-                    currentNode, Direction.LEFT, positionBlankSymbol)
+                    currentNode, Direction.LEFT)
 
         time1 = time.time()
         # if(isFound):
