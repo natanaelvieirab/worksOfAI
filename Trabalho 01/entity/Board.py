@@ -8,7 +8,7 @@ class Board:
         self.blankSimbol = BLANK_SYMBOL
         self.finalState = list([])
 
-        self.initialState = initialState or list([])
+        self.initialState = initialState if initialState != [] else []
 
         self.startBoard()
 
@@ -16,8 +16,8 @@ class Board:
         self.finalState = self.createFinalState()
         print("Estado Final: ", self.finalState)
 
-        if(self.initialState == []):
-            self.initialState = self.createInitialState()
+        self.initialState = self.createInitialState() if self.initialState == [
+        ] else self.initialState
 
     def createFinalState(self):
         limitNumber = self.size**2
