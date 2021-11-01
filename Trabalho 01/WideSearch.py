@@ -2,6 +2,7 @@ from queue import Queue
 from entity.Game import Game
 from entity.Position import Position
 from entity.utils.enums import Direction
+from tests.data import requiredData
 import time
 
 
@@ -68,12 +69,7 @@ class WideSearch:
         print("Tempo de execucao: ", time1-time0)
 
 
-ws = WideSearch([
-    [1, 2, 3, 4],
-    [13, 6, 8, 12],
-    [5, 9, 0, 7],
-    [14, 11, 10, 15]
-])
+ws = WideSearch(requiredData[1]["board"])
 ws.start()
 
 '''
