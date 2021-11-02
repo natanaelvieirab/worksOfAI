@@ -1,6 +1,7 @@
 from entity.Board import Board
 from entity.Position import Position
 from entity.utils.functions import isOdd, convert_board_in_list
+from entity.utils.BoardUtil import BoardUtil
 
 
 class Game(Board):
@@ -8,19 +9,10 @@ class Game(Board):
         super().__init__(initialBoard)
         self.boardSize = super().getBoardSize()
         self.blankSimbol = super().getBlankSimbol()
-        self.positionBlankSymbol = self.getBlankPosition(self.initialState)
         self.countMove = 0
 
     def __str__(self):
         return super().__str__()
-
-    def getBlankPosition(self, node) -> Position:
-
-        for i in range(0, self.boardSize):
-            line = node[i]
-
-            if(self.blankSimbol in line):
-                return Position(i, line.index(self.blankSimbol))
 
     def printNodeAndInformation(self, node):
         """Exibir o nós únicos juntamente com sua representação numerica"""
@@ -72,7 +64,8 @@ class Game(Board):
     def get_position_of_empty_value_from_bottom(self) -> int:
         """Procura pelo Empty_Value, iniciando a busca pela posição final (canto direito-inferior)."""
         # forma resumida
-        return self.boardSize - self.positionBlankSymbol.line
+        positionBlankSymbol = BoardUtil.getBlankPosition(self.initialState)
+        return self.boardSize - positionBlankSymbol.line
 
 
 # só será verdade quando esse arquivo for executado

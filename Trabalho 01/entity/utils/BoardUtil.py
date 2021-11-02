@@ -1,34 +1,37 @@
 import copy
-from ..Board import Board
-from ..Position import Position
-from .enums import Direction
+from entity.Position import Position
+from entity.utils.enums import Direction
+from entity.utils.const import BLANK_SYMBOL
 
 
 class BoardUtil():
-    def getBlankPosition(node: Board) -> Position:
-        for i in range(0, node.size):
-            line = node[i]
+    @staticmethod
+    def getBlankPosition(node: list) -> Position:
+        for i in range(0, len(node)):
+            for j in range(0, len(node[i])):
+                if(node[i][j] == BLANK_SYMBOL):
+                    return Position(i, j)
+        return Position(0,0)
 
-            if(node.blankSymbol in line):
-                return Position(i, line.index(node.blankSymbol))
-
-    def can_move(node: Board, direction: Direction) -> bool:
+    @staticmethod
+    def can_move(node: list, direction: Direction, positionBlankSymbol: Position) -> bool:
         """Verifica se a peça em branco pode ser movida na direção indicada."""
         
         if direction == Direction.TOP:
-            return node.positionBlankSymbol.line > 0
+            return positionBlankSymbol.line > 0
         elif direction == Direction.RIGHT:
-            return node.positionBlankSymbol.column < (node.size - 1)
+            return positionBlankSymbol.column < (len(node) - 1)
         elif direction == Direction.DOWN:
-            return node.positionBlankSymbol.line < (node.size - 1)
+            return positionBlankSymbol.line < (len(node) - 1)
         else:
-            return node.positionBlankSymbol.column > 0
+            return positionBlankSymbol.column > 0
 
-    def move(self, node: Board, direction: Direction):
+    @staticmethod
+    def move(node: list, direction: Direction, positionBlankSymbol: Position):
         """Move peça em branco na direção indicada."""
 
-        line = node.positionBlankSymbol.line
-        column = node.positionBlankSymbol.column
+        line = positionBlankSymbol.line
+        column = positionBlankSymbol.column
         nodeMoved = copy.deepcopy(node)
 
         if direction == Direction.TOP:
@@ -40,15 +43,20 @@ class BoardUtil():
         else:
             column -= 1
 
-        self._swap(nodeMoved, line, column)
+        BoardUtil.swap(nodeMoved, line, column, positionBlankSymbol)
         return nodeMoved
 
-    def _swap(node: Board, lineValue: int, columnValue: int):
+    @staticmethod
+    def swap(node: list, lineValue: int, columnValue: int, positionBlankSymbol: Position):
         """Troca uma peça de lugar com a peça em branco."""
 
-        line = node.positionBlankSymbol.line
-        column = node.positionBlankSymbol.column
+        node[positionBlankSymbol.line][positionBlankSymbol.column] = node[lineValue][columnValue]
+        node[lineValue][columnValue] = BLANK_SYMBOL
 
-        node[line][column] = node[lineValue][columnValue]
-        node[lineValue][columnValue] = node.blankSymbol
-        node.positionBlankSymbol.set_position(lineValue, columnValue)
+    @staticmethod
+    def tryMove(node: list, direction: Direction):
+        positionBlankSymbol = BoardUtil.getBlankPosition(node)
+
+        if(BoardUtil.can_move(node, direction, positionBlankSymbol)):
+            return BoardUtil.move(node, direction, positionBlankSymbol)
+        return None

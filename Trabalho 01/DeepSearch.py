@@ -1,8 +1,8 @@
 from queue import Queue
+from entity.utils.BoardUtil import BoardUtil
 from entity.Game import Game
+from entity.utils.enums import Direction
 from entity.Position import Position
-from utils.BoardUtil import BoardUtil
-from utils.enums import Direction
 import time
 
 
@@ -14,32 +14,32 @@ class DeepSearch:
         self.index = 0
 
     def moveAndCheck(self, node, direction: Direction) -> bool:
-        nodeMoved = BoardUtil.move(node, direction)
+        nodeMoved = BoardUtil.tryMove(node, direction)
+        if(nodeMoved == None):
+            return False
 
         isFound = self.game.isCheckIfFinalState(nodeMoved)
 
         if (nodeMoved not in self.listVisited):
             self.checkStack.insert(self.index, nodeMoved)
             self.index += 1
-
             self.listVisited.append(nodeMoved)
             self.game.printNodeAndInformation(nodeMoved)
 
         return isFound
 
     def start(self):
-
         currentNode = self.game.getInitialState()
 
-        print("tabuleiro Inicial:")
+        print("Tabuleiro Inicial:")
         self.game.print(currentNode)
         print(" --------------- ")
 
         time0 = time.time()
 
-        # if(not self.game.isSolvable()):
-        #     print("Este tabuleiro não possui solução!")
-        #     return
+        if(not self.game.isSolvable()):
+            print("Este tabuleiro não possui solução!")
+            return
 
         self.checkStack.append(currentNode)
         isFound = self.game.isCheckIfFinalState(currentNode)
@@ -47,25 +47,13 @@ class DeepSearch:
 
         while(not isFound and len(self.checkStack) != 0):
             currentNode = self.checkStack.pop(POSITION_INITIAL)
-            positionBlankSymbol = self.game.getBlankPosition(currentNode)
 
             self.index = 0
 
-            if(BoardUtil.can_move(currentNode, Direction.TOP)):
-                isFound = self.moveAndCheck(
-                    currentNode, Direction.TOP)
-
-            if(BoardUtil.can_move(currentNode, Direction.RIGHT) and not isFound):
-                isFound = self.moveAndCheck(
-                    currentNode, Direction.RIGHT)
-
-            if(BoardUtil.can_move(currentNode, Direction.DOWN) and not isFound):
-                isFound = self.moveAndCheck(
-                    currentNode, Direction.DOWN)
-
-            if(BoardUtil.can_move(currentNode, Direction.LEFT) and not isFound):
-                isFound = self.moveAndCheck(
-                    currentNode, Direction.LEFT)
+            for  direction in Direction:
+                if(isFound):
+                    break
+                isFound = self.moveAndCheck(currentNode, direction)
 
         time1 = time.time()
         # if(isFound):
@@ -77,4 +65,10 @@ class DeepSearch:
 
 
 ds = DeepSearch()
+ds.game = Game([
+            [1, 2, 3, 4],
+            [5, 6, 8, 12],
+            [13, 9, 0, 7],
+            [14, 11, 10, 15]
+        ])
 ds.start()

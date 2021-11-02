@@ -1,6 +1,6 @@
 from random import choice
 from entity.Position import Position
-from utils.const import BLANK_SYMBOL
+from entity.utils.const import BLANK_SYMBOL
 
 
 class Board:
@@ -11,17 +11,18 @@ class Board:
         self.finalState = list([])
 
         self.startBoard()
-        self.positionBlankSymbol = self.getBlankPosition()
 
-    def getBlankPosition(self, node = []) -> Position:
-        if(node == []):
-            node = self.initialState
+    def getBlankPosition2(self) -> Position:
+        # if(node == []):
+            # node = self.initialState
+        node = self.initialState
         
         for i in range(0, self.size):
             line = node[i]
 
             if(self.blankSimbol in line):
                 return Position(i, line.index(self.blankSimbol))
+        return Position(0, 0)
 
     def startBoard(self):
         self.finalState = self.createFinalState()
@@ -86,14 +87,6 @@ class Board:
 
     def __str__(self):
         return self.printFinalState()
-
-    @property
-    def positionBlankSymbol(self) -> Position:
-        return self.positionBlankSymbol
-
-    @positionBlankSymbol.setter
-    def positionBlankSymbol(self, positionBlankSymbol: Position):
-        self.positionBlankSymbol = positionBlankSymbol
 
     def getInitialState(self):
         return self.initialState
