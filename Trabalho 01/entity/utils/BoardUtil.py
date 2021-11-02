@@ -1,39 +1,33 @@
 import copy
-from entity.Board import Board
 from entity.Position import Position
 from entity.utils.enums import Direction
+from entity.utils.const import BLANK_SYMBOL
 
 
 class BoardUtil():
-    def getBlankPosition(node: Board) -> Position:
-        for i in range(0, node.size):
-            line = node[i]
+    @staticmethod
+    def getBlankPosition(node: list) -> Position:
+        for i in range(0, len(node)):
+            for j in range(0, len(node[i])):
+                if(node[i][j] == BLANK_SYMBOL):
+                    return Position(i, j)
+        return Position(0,0)
 
-            if(node.blankSimbol in line):
-                return Position(i, line.index(node.blankSimbol))
-
-    def printNodeAndInformation(self, node):
-        """Exibir o nós únicos juntamente com sua representação numerica"""
-
-        super().print(node)
-
-        self.countMove += 1
-        print(f"Node nº: {self.countMove} \n")
-        print("-------------------")
-
-    def can_move(node: Board, direction: Direction, positionBlankSymbol: Position) -> bool:
+    @staticmethod
+    def can_move(node: list, direction: Direction, positionBlankSymbol: Position) -> bool:
         """Verifica se a peça em branco pode ser movida na direção indicada."""
         
         if direction == Direction.TOP:
             return positionBlankSymbol.line > 0
         elif direction == Direction.RIGHT:
-            return positionBlankSymbol.column < (node.size - 1)
+            return positionBlankSymbol.column < (len(node) - 1)
         elif direction == Direction.DOWN:
-            return positionBlankSymbol.line < (node.size - 1)
+            return positionBlankSymbol.line < (len(node) - 1)
         else:
             return positionBlankSymbol.column > 0
 
-    def move(self, node: Board, direction: Direction, positionBlankSymbol: Position):
+    @staticmethod
+    def move(node: list, direction: Direction, positionBlankSymbol: Position):
         """Move peça em branco na direção indicada."""
 
         line = positionBlankSymbol.line
@@ -49,12 +43,20 @@ class BoardUtil():
         else:
             column -= 1
 
-        self._swap(nodeMoved, line, column, positionBlankSymbol)
+        BoardUtil.swap(nodeMoved, line, column, positionBlankSymbol)
         return nodeMoved
 
-    def _swap(node: Board, lineValue: int, columnValue: int, positionBlankSymbol: Position):
+    @staticmethod
+    def swap(node: list, lineValue: int, columnValue: int, positionBlankSymbol: Position):
+        """Troca uma peça de lugar com a peça em branco."""
 
         node[positionBlankSymbol.line][positionBlankSymbol.column] = node[lineValue][columnValue]
-        node[lineValue][columnValue] = node.blankSimbol
+        node[lineValue][columnValue] = BLANK_SYMBOL
 
+    @staticmethod
+    def tryMove(node: list, direction: Direction):
+        positionBlankSymbol = BoardUtil.getBlankPosition(node)
 
+        if(BoardUtil.can_move(node, direction, positionBlankSymbol)):
+            return BoardUtil.move(node, direction, positionBlankSymbol)
+        return None

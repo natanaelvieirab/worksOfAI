@@ -1,9 +1,7 @@
-import copy
 from entity.Board import Board
 from entity.Position import Position
-from entity.utils.enums import Direction
-from entity.utils.functions import isOdd
-from entity.utils.functions import convert_board_in_list
+from entity.utils.BoardUtil import BoardUtil
+from entity.utils.functions import isOdd, convert_board_in_list
 
 
 class Game(Board):
@@ -11,19 +9,10 @@ class Game(Board):
         super().__init__(initialBoard)
         self.boardSize = super().getBoardSize()
         self.blankSimbol = super().getBlankSimbol()
-        self.positionBlankSymbol = self.getBlankPosition(self.initialState)
         self.countMove = 0
 
     def __str__(self):
         return super().__str__()
-
-    def getBlankPosition(self, node) -> Position:
-
-        for i in range(0, self.boardSize):
-            line = node[i]
-
-            if(self.blankSimbol in line):
-                return Position(i, line.index(self.blankSimbol))
 
     def printNodeAndInformation(self, node):
         """Exibir o nós únicos juntamente com sua representação numerica"""
@@ -33,44 +22,6 @@ class Game(Board):
         self.countMove += 1
         print(f"Node nº: {self.countMove} \n")
         print("-------------------")
-
-    # referente ao movimento no simbolo branco
-    def can_move(self, direction: Direction, positionBlankSymbol: Position = None) -> bool:
-        """Verifica se a peça em branco pode ser movida na direção indicada."""
-        
-        if direction == Direction.TOP:
-            return positionBlankSymbol.line > 0
-        elif direction == Direction.RIGHT:
-            return positionBlankSymbol.column < (self.boardSize - 1)
-        elif direction == Direction.DOWN:
-            return positionBlankSymbol.line < (self.boardSize - 1)
-        else:
-            return positionBlankSymbol.column > 0
-
-    def move(self, node, direction: Direction, positionBlankSymbol: Position = None):
-        """Move peça em branco na direção indicada."""
-
-        line = positionBlankSymbol.line
-        column = positionBlankSymbol.column
-        nodeMoved = copy.deepcopy(node)
-
-        if direction == Direction.TOP:
-            line -= 1
-        elif direction == Direction.RIGHT:
-            column += 1
-        elif direction == Direction.DOWN:
-            line += 1
-        else:
-            column -= 1
-
-        self._swap(nodeMoved, line, column, positionBlankSymbol)
-
-        return nodeMoved
-
-    def _swap(self, node, lineValue: int, columnValue: int, positionBlankSymbol: Position):
-
-        node[positionBlankSymbol.line][positionBlankSymbol.column] = node[lineValue][columnValue]
-        node[lineValue][columnValue] = self.blankSimbol
 
     def getCountMove(self):
         return self.countMove
@@ -113,7 +64,8 @@ class Game(Board):
     def get_position_of_empty_value_from_bottom(self) -> int:
         """Procura pelo Empty_Value, iniciando a busca pela posição final (canto direito-inferior)."""
         # forma resumida
-        return self.boardSize - self.positionBlankSymbol.line
+        positionBlankSymbol = BoardUtil.getBlankPosition(self.initialState)
+        return self.boardSize - positionBlankSymbol.line
 
 
 # só será verdade quando esse arquivo for executado

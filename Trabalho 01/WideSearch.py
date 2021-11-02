@@ -2,6 +2,7 @@ from queue import Queue
 from entity.Game import Game
 from entity.Position import Position
 from entity.utils.enums import Direction
+from entity.utils.BoardUtil import BoardUtil
 from tests.data import *
 import time
 
@@ -12,8 +13,10 @@ class WideSearch:
         self.checkQueue = Queue()
         self.listVisited = list()
 
-    def moveAndCheck(self, node, direction: Direction, positionBlankSymbol: Position) -> bool:
-        nodeMoved = self.game.move(node, direction, positionBlankSymbol)
+    def moveAndCheck(self, node, direction: Direction) -> bool:
+        nodeMoved = BoardUtil.tryMove(node, direction)
+        if(nodeMoved == None):
+            return False
 
         isFound = self.game.isCheckIfFinalState(nodeMoved)
 
@@ -28,7 +31,7 @@ class WideSearch:
 
         currentNode = self.game.getInitialState()
 
-        print("tabuleiro Inicial:")
+        print("Tabuleiro Inicial:")
         self.game.print(currentNode)
         print(" --------------- ")
 
@@ -44,24 +47,12 @@ class WideSearch:
 
         while(not isFound and not self.checkQueue.empty()):
             currentNode = self.checkQueue.get()  # removendo o primeiro elemento da fila
-            positionBlankSymbol = self.game.getBlankPosition(currentNode)
 
-            if(self.game.can_move(Direction.TOP, positionBlankSymbol)):
-                isFound = self.moveAndCheck(
-                    currentNode, Direction.TOP, positionBlankSymbol)
-
-            if(self.game.can_move(Direction.RIGHT, positionBlankSymbol) and not isFound):
-                isFound = self.moveAndCheck(
-                    currentNode, Direction.RIGHT, positionBlankSymbol)
-
-            if(self.game.can_move(Direction.DOWN, positionBlankSymbol) and not isFound):
-                isFound = self.moveAndCheck(
-                    currentNode, Direction.DOWN, positionBlankSymbol)
-
-            if(self.game.can_move(Direction.LEFT, positionBlankSymbol) and not isFound):
-                isFound = self.moveAndCheck(
-                    currentNode, Direction.LEFT, positionBlankSymbol)
-
+            for direction in Direction:
+                if(isFound):
+                    break
+                isFound = self.moveAndCheck(currentNode, direction)
+        
         time1 = time.time()
 
         print("----Finalizado----")

@@ -2,6 +2,7 @@ import time
 from queue import Queue
 from entity.Game import Game
 from entity.Position import Position
+from entity.utils.BoardUtil import BoardUtil
 from entity.utils.enums import Direction
 from heuristics.NumberOfPiecesOutPlace import numberOfPiecesOutPlace
 from heuristics.selectBoardByHeuristic import selectBoardByHeuristic
@@ -15,8 +16,10 @@ class GreedySearch:
         self.tempList = list()
         self.visiteds = list()
 
-    def moveAndCheck(self, node, direction: Direction, positionBlankSymbol: Position) -> bool:
-        nodeMoved = self.game.move(node, direction, positionBlankSymbol)
+    def moveAndCheck(self, node, direction: Direction) -> bool:
+        nodeMoved = BoardUtil.tryMove(node, direction)
+        if(nodeMoved == None):
+            return False
 
         isFound = self.game.isCheckIfFinalState(nodeMoved)
 
@@ -45,24 +48,12 @@ class GreedySearch:
 
         while(not isFound):
             currentNode = self._getLastInserted(self.nodesList)
-            positionBlankSymbol = self.game.getBlankPosition(currentNode)
 
-            if(self.game.can_move(Direction.TOP, positionBlankSymbol)):
-                isFound = self.moveAndCheck(
-                    currentNode, Direction.TOP, positionBlankSymbol)
+            for direction in Direction:
+                if(isFound):
+                    break
+                isFound = self.moveAndCheck(currentNode, direction)
 
-            if(self.game.can_move(Direction.RIGHT, positionBlankSymbol) and not isFound):
-                isFound = self.moveAndCheck(
-                    currentNode, Direction.RIGHT, positionBlankSymbol)
-
-            if(self.game.can_move(Direction.DOWN, positionBlankSymbol) and not isFound):
-                isFound = self.moveAndCheck(
-                    currentNode, Direction.DOWN, positionBlankSymbol)
-
-            if(self.game.can_move(Direction.LEFT, positionBlankSymbol) and not isFound):
-                isFound = self.moveAndCheck(
-                    currentNode, Direction.LEFT, positionBlankSymbol)
-        
             if(isFound):
                 self.nodesList.append(self._getLastInserted(self.tempList))
                 currentNode = self._getLastInserted(self.nodesList)

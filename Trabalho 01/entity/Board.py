@@ -1,4 +1,5 @@
 from random import choice
+from entity.Position import Position
 from entity.utils.const import BLANK_SYMBOL
 
 
@@ -6,9 +7,8 @@ class Board:
     def __init__(self, initialState=[], size=4):
         self.size = size
         self.blankSimbol = BLANK_SYMBOL
+        self.initialState = initialState or list([])
         self.finalState = list([])
-
-        self.initialState = initialState if initialState != [] else []
 
         self.startBoard()
 
@@ -16,8 +16,8 @@ class Board:
         self.finalState = self.createFinalState()
         print("Estado Final: ", self.finalState)
 
-        self.initialState = self.createInitialState() if self.initialState == [
-        ] else self.initialState
+        if(self.initialState == []):
+            self.initialState = self.createInitialState()
 
     def createFinalState(self):
         limitNumber = self.size**2
@@ -44,7 +44,6 @@ class Board:
         listNumbers = list(range(limitNumber))
 
         boardRandom = list()
-        count = 1
 
         for i in range(self.size):
             boardRandom.append([])
