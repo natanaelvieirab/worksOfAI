@@ -4,6 +4,7 @@ import time
 import itertools
 import time
 
+
 class Manhanttan(Game):
     def heuristic(self, a):
         result = 0
@@ -12,10 +13,12 @@ class Manhanttan(Game):
 
         for current, target in enumerate(node):
             currentRow = int(current/3)
-            currentColumn = current%3
+            currentColumn = current % 3
             targetRow = int(target/3)
-            targetColumn = target%3
-            result += abs(currentRow-targetRow) + abs(currentColumn-targetColumn)
+            targetColumn = target % 3
+            result += abs(currentRow-targetRow) + \
+                abs(currentColumn-targetColumn)
+            # abs é uma função matematica que retorna o valor absoluto
 
         return result
 
@@ -44,27 +47,30 @@ class Manhanttan(Game):
             blankIndex = self.getBlankIndexes(currentNode)
 
             if self.board.canMoveTop(blankIndex):
-                topNode = self.board.top(currentNode, blankIndex[0], blankIndex[1])
+                topNode = self.board.top(
+                    currentNode, blankIndex[0], blankIndex[1])
                 found = self.checkFinal(topNode)
 
             if self.board.canMoveLeft(blankIndex) and found == False:
-                leftNode = self.board.left(currentNode, blankIndex[0], blankIndex[1])
+                leftNode = self.board.left(
+                    currentNode, blankIndex[0], blankIndex[1])
                 found = self.checkFinal(leftNode)
 
             if self.board.canMoveRight(blankIndex) and found == False:
-                rightNode = self.board.right(currentNode, blankIndex[0], blankIndex[1])
+                rightNode = self.board.right(
+                    currentNode, blankIndex[0], blankIndex[1])
                 found = self.checkFinal(rightNode)
 
             if self.board.canMoveBottom(blankIndex) and found == False:
-                bottomNode = self.board.bottom(currentNode, blankIndex[0], blankIndex[1])
+                bottomNode = self.board.bottom(
+                    currentNode, blankIndex[0], blankIndex[1])
                 found = self.checkFinal(bottomNode)
 
         t1 = time.time()
         print('Time:', t1-t0)
-        print('------')    
+        print('------')
 
 
 if __name__ == '__main__':
     algorithm = Manhanttan()
     algorithm.run()
-    
