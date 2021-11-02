@@ -2,7 +2,7 @@ from queue import Queue
 from entity.Game import Game
 from entity.Position import Position
 from entity.utils.enums import Direction
-from tests.data import requiredData
+from tests.data import *
 import time
 
 
@@ -69,7 +69,8 @@ class WideSearch:
         print("Tempo de execucao: ", time1-time0)
 
 
-ws = WideSearch(requiredData[1]["board"])
+# ws = WideSearch(requiredData[1]["board"])
+ws = WideSearch(data[0]["board"])
 ws.start()
 
 '''
@@ -95,5 +96,16 @@ Relatorio de busca:
     > Nos visitados: 0
     Não possui solução
     --------------------------------------
+
+    entrada : (data[0]):
+        [
+            [1, 2, 3, 4],
+            [5, 6, 7, 8],
+            [9, 10, 0, 11],
+            [13, 14, 15, 12]
+        ]
+    > Tempo de execução: 0.005639314651489258
+    > Nós visitados: 9
+    
 
 '''
