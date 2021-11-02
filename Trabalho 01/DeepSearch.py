@@ -2,12 +2,13 @@ from queue import Queue
 from entity.Game import Game
 from entity.Position import Position
 from entity.utils.enums import Direction
+from tests.data import *
 import time
 
 
 class DeepSearch:
-    def __init__(self):
-        self.game = Game()
+    def __init__(self, initialBoard=[]):
+        self.game = Game(initialBoard)
         self.checkStack = []
         self.listVisited = list()
         self.index = 0
@@ -36,9 +37,9 @@ class DeepSearch:
 
         time0 = time.time()
 
-        # if(not self.game.isSolvable()):
-        #     print("Este tabuleiro não possui solução!")
-        #     return
+        if(not self.game.isSolvable()):
+            print("Este tabuleiro não possui solução!")
+            return
 
         self.checkStack.append(currentNode)
         isFound = self.game.isCheckIfFinalState(currentNode)
@@ -67,13 +68,11 @@ class DeepSearch:
                     currentNode, Direction.LEFT, positionBlankSymbol)
 
         time1 = time.time()
-        # if(isFound):
+
         print("----Finalizado----")
         print(f"foram realizado {self.game.getCountMove()} movimentos!")
         print("Tempo de execucao: ", time1-time0)
-        # else:
-        #     print("Não foi possivel encontrar uma solução para o problema")
 
 
-ds = DeepSearch()
+ds = DeepSearch(requiredData[0]["board"])
 ds.start()
