@@ -3,7 +3,9 @@ def numberOfPiecesOutPlace(boardCurrent: list, boardFinal: list):
 
     for i in range(len(boardCurrent)):
         for j in range(len(boardCurrent)):
-            if boardCurrent[i][j] != boardFinal[i][j]:
+            if(boardCurrent[i][j] == 0 or boardFinal[i][j] == 0):
+                continue
+            if(boardCurrent[i][j] != boardFinal[i][j]):
                 piecesOutPlace += 1
 
     return piecesOutPlace

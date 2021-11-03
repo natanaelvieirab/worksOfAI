@@ -9,7 +9,7 @@ def selectBoardByHeuristic(boardsList: list, boardFinal, heuristicFunction):
             numberMin = numberCurrent
             numberMinPos = i
         
-    return numberMinPos
+    return (boardsList[numberMinPos], numberMin)
 
 def orderBoardListByValueHeuristic(boardsList: list, boardFinal, heuristicFunction):
     weights = []
@@ -37,4 +37,4 @@ def sortByWeights(weights: list, weightsIndex: list):
         weights[i] = weights[minPos]
         weightsIndex[i] = weightsIndex[minPos]
         weights[minPos] = temp
-        weightsIndex[minPos] = temp
+        weightsIndex[minPos] = tempIndex

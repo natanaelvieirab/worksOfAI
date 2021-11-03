@@ -1,7 +1,5 @@
 import time
-from queue import Queue
 from entity.Game import Game
-from entity.Position import Position
 from entity.utils.BoardUtil import BoardUtil
 from entity.utils.enums import Direction
 from heuristics.NumberOfPiecesOutPlace import numberOfPiecesOutPlace
@@ -12,7 +10,6 @@ from tests.data import requiredData
 class GreedySearch:
     def __init__(self, initialBoard=[]):
         self.game = Game(initialBoard)
-        self.nodesList = list()
         self.extendedNeighbors = list()
         self.visiteds = list()
 
@@ -26,6 +23,7 @@ class GreedySearch:
         if(nodeMoved not in self.visiteds):
             isFound = self.game.isCheckIfFinalState(nodeMoved)
             self.extendedNeighbors.append(nodeMoved)
+            self.visiteds.append(nodeMoved)
 
         return isFound
 
@@ -42,26 +40,26 @@ class GreedySearch:
             print("Este tabuleiro não possui solução!")
             return
 
-        self.nodesList.append(currentNode)
         self.visiteds.append(currentNode)
 
         isFound = self.game.isCheckIfFinalState(currentNode)
 
         while(not isFound):
-            currentNode = self._getLastInserted(self.nodesList)
+            currentNode = self._getLastInserted(self.visiteds)
 
+            self.extendedNeighbors = []
             for direction in Direction:
                 isFound = self.moveAndCheck(currentNode, direction)
 
                 if(isFound):
-                    self.nodesList.append(self._getLastInserted(self.extendedNeighbors))
-                    currentNode = self._getLastInserted(self.nodesList)
-                    self.game.printNodeAndInformation(currentNode)
+                    lastInserted = self._getLastInserted(self.extendedNeighbors)
+                    self.visiteds.append(lastInserted)
+                    self.game.printNodeAndInformation(lastInserted)
                     break
 
             if(self.extendedNeighbors == []):
                 break
-            self.useHeuristic()
+            self.useHeuristic(currentNode)
 
         time1 = time.time()
 
@@ -69,19 +67,22 @@ class GreedySearch:
         print(f"Foram realizados {self.game.getCountMove()} movimentos!")
         print("Tempo de execucao: ", time1 - time0)
 
-    def useHeuristic(self):
-        indexMin = selectBoardByHeuristic(self.extendedNeighbors, self.game.getFinalState(), numberOfPiecesOutPlace)
+    def useHeuristic(self, currentNode):
+        (neighborsWithLowerHeuristics, heuristic) = selectBoardByHeuristic(self.extendedNeighbors, self.game.getFinalState(), numberOfPiecesOutPlace)
+
+        heuristicCurrentNode = numberOfPiecesOutPlace(currentNode, self.game.getFinalState())
+        if(heuristic > heuristicCurrentNode):
+            self.extendedNeighbors = []
+            return
         
-        self.nodesList.append(self.extendedNeighbors[indexMin])
-        self.visiteds.append(self.extendedNeighbors[indexMin])
-        self.game.printNodeAndInformation(self.extendedNeighbors[indexMin])
+        self.visiteds.append(neighborsWithLowerHeuristics)
+        self.game.printNodeAndInformation(neighborsWithLowerHeuristics)
         self.extendedNeighbors = []
 
     def _getLastInserted(self, array):
         return array[len(array) -1]
 
-# gs = GreedySearch()
-gs = GreedySearch(requiredData[0]["board"])
-gs.start()
 
-
+if __name__ == '__main__':
+    gs = GreedySearch(requiredData[0]["board"])
+    gs.start()
