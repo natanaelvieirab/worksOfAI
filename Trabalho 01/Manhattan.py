@@ -11,37 +11,42 @@ import time
 class Manhattan:
     def __init__(self, initialBoard=[]):
         self.game = Game(initialBoard)
-        self.nodeList = list()
+        self.nodeListBackup = list()
         self.listVisited = list()
         self.finalState = self.game.getFinalState()
+        self.heap = []
 
     def moveAndCheck(self, node, direction: Direction) -> bool:
         nodeMoved = BoardUtil.tryMove(node, direction)
 
-        if(nodeMoved == None):
+        if(nodeMoved == None or (nodeMoved in self.listVisited)):
             return False
 
         isFound = self.game.isCheckIfFinalState(nodeMoved)
 
-        if (nodeMoved not in self.listVisited):
-            self.nodeList.append(nodeMoved)
-            self.listVisited.append(nodeMoved)
+        if isFound:
             self.game.printNodeAndInformation(nodeMoved)
+            return True
+
+        # valor da heurística do nó n até um nó objetivo (distancia em linha reta no caso de distancias espaciais)
+        h = manhattanDistance(nodeMoved, self.finalState)
+        g = len(nodeMoved)  # custo do caminho do nó inicial até o nó n
+        f = g+h  # custo total
+
+        heappush(self.heap, (f, nodeMoved))
+        self.nodeListBackup.append(nodeMoved)
 
         return isFound
 
     def getBestWay(self):
-        stack = []
+        """Removendo o menor valor da pilha"""
+        currentNode = heappop(self.heap)[1] if len(
+            self.heap) != 0 else self.nodeListBackup[0]
 
-        for node in self.nodeList:
-            h = manhattanDistance(node, self.finalState)
-            g = len(node)
-            f = g+h
+        self.nodeListBackup.pop(self.nodeListBackup.index(currentNode))
 
-            heappush(stack, (f, node))
-        """Removendo o menor valor da pilha, em seguida removendo esse caminho da lista de nos"""
-        index = self.nodeList.index(heappop(stack)[1])
-        currentNode = self.nodeList.pop(index)
+        self.listVisited.append(currentNode)
+        self.game.printNodeAndInformation(currentNode)
 
         return currentNode
 
@@ -59,16 +64,18 @@ class Manhattan:
             print("Este tabuleiro não possui solução!")
             return
 
-        self.nodeList.append(currentNode)
-        self.listVisited.append(currentNode)
+        self.nodeListBackup.append(currentNode)
+
         isFound = self.game.isCheckIfFinalState(currentNode)
 
-        while(not isFound and len(self.nodeList) != 0):
+        while(not isFound):
             currentNode = self.getBestWay()
+            self.heap = []
 
             for direction in Direction:
                 if(isFound):
                     break
+
                 isFound = self.moveAndCheck(currentNode, direction)
 
         time1 = time.time()
@@ -78,8 +85,9 @@ class Manhattan:
         print("Tempo de execucao: ", time1-time0)
 
 
-m = Manhattan(requiredData[0]["board"])
-# m = Manhattan(data[0]["board"])
+# m = Manhattan(requiredData[1]["board"])
+m = Manhattan(data[1]["board"])
+# m = Manhattan()
 m.start()
 
 '''
@@ -91,7 +99,16 @@ Relatorio de busca:
             [13, 9, 0, 7],
             [14, 11, 10, 15]
         ],
-    > Tempo de execução: 0.03873133659362793
-    > Nos visitados: 31
+    > Tempo de execução: 0.003942012786865234
+    > Nos visitados: 13
+    --------------------------------------
+       [
+            [1, 2, 3, 4],
+            [5, 6, 7, 8],
+            [9, 10, 0, 11],
+            [13, 14, 15, 12]
+        ],
+    > Tempo de execução: 0.0008709430694580078
+    > Nos visitados: 3
     --------------------------------------
 '''
