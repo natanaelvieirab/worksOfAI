@@ -6,3 +6,4 @@ Cada arquivo `.py` dessa pasta contém um algoritmo. Para executar qualquer algo
 | --------------------- | ------------- |
 | Busca em largura      | WideSearch.py |
 | Busca em profundidade | DeepSearch.py |
+| A\*                   | AStar.py      |
