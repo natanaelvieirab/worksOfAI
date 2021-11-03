@@ -5,6 +5,7 @@ from heapq import heappush, heappop
 from tests.data import *
 import itertools
 import time
+import psutil
 
 
 class Manhattan:
@@ -91,18 +92,20 @@ class Manhattan:
         time1 = time.time()
 
         print("----Finalizado----")
-        print(f"foram realizado {self.game.getCountMove()} movimentos!")
+        print(f"Foram realizado {self.game.getCountMove()} movimentos!")
         print("Tempo de execucao: ", time1-time0)
+        print(f"CPU em %: {psutil.cpu_percent()}")
+        print(f"Uso de memoria: {psutil.virtual_memory()._asdict()}")
 
 
-m = Manhattan(requiredData[0]["board"])
-# m = Manhattan(data[0]["board"])
+# m = Manhattan(requiredData[0]["board"])
+m = Manhattan(data[1]["board"])
 # m = Manhattan()
 m.start()
 
 '''
 Relatorio de busca:
-    entrada: 
+    entrada requiredData[0]: 
         [
             [1, 2, 3, 4],
             [5, 6, 8, 12],
@@ -111,8 +114,16 @@ Relatorio de busca:
         ],
     > Tempo de execução: 0.003942012786865234
     > Nos visitados: 13
+    > CPU em %: 0,0
+    > Uso de memoria:{'total': 12250648576, 'available': 8434409472,
+     'percent': 31.2, 'used': 3116130304,
+      'free': 6433632256, 'active': 3968139264,
+       'inactive': 1281953792, 'buffers': 243056640,
+        'cached': 2457829376, 'shared': 412561408, 'slab': 219697152}
+
     --------------------------------------
-       [
+    entrada (data[0])
+      [
             [1, 2, 3, 4],
             [5, 6, 7, 8],
             [9, 10, 0, 11],
@@ -120,5 +131,12 @@ Relatorio de busca:
         ],
     > Tempo de execução: 0.0008709430694580078
     > Nos visitados: 3
+    > CPU em %: 0,0
+    > Uso de memoria:{'total': 12250648576, 'available': 8454516736,
+     'percent': 31.0, 'used': 3112218624,
+      'free': 6454185984, 'active': 3963432960,
+       'inactive': 1275674624, 'buffers': 242647040,
+        'cached': 2441596928, 'shared': 396390400, 'slab': 219541504}
+
     --------------------------------------
 '''
