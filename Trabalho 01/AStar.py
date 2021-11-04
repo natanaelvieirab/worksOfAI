@@ -8,10 +8,10 @@ import time
 import psutil
 
 
-class Manhattan:
+class AStar:
     def __init__(self, initialBoard=[]):
         self.game = Game(initialBoard)
-        self.nodeListBackup = list()
+        self.nodeStackBackup = list()
         self.listVisited = list()
         self.heap = []
 
@@ -45,16 +45,19 @@ class Manhattan:
         f = g+h  # custo total
 
         heappush(self.heap, (f, nodeMoved))
-        self.nodeListBackup.append(nodeMoved)
 
         return isFound
 
     def getBestWay(self):
         """Removendo o menor valor da pilha"""
         currentNode = heappop(self.heap)[1] if len(
-            self.heap) != 0 else self.nodeListBackup[0]
+            self.heap) != 0 else self.nodeStackBackup.pop()
 
-        self.nodeListBackup.pop(self.nodeListBackup.index(currentNode))
+        """Esvazia a heap e armazenar em uma pilha para resolver futuros conflitos"""
+        length = len(self.heap) - 1
+        while length >= 0:
+            self.nodeStackBackup.append(self.heap.pop(length)[1])
+            length -= 1
 
         self.listVisited.append(currentNode)
         self.game.printNodeAndInformation(currentNode)
@@ -75,7 +78,7 @@ class Manhattan:
             print("Este tabuleiro não possui solução!")
             return
 
-        self.nodeListBackup.append(currentNode)
+        heappush(self.heap, (16, currentNode))
 
         isFound = self.game.isCheckIfFinalState(currentNode)
 
@@ -98,10 +101,10 @@ class Manhattan:
         print(f"Uso de memoria: {psutil.virtual_memory()._asdict()}")
 
 
-# m = Manhattan(requiredData[0]["board"])
-m = Manhattan(data[1]["board"])
-# m = Manhattan()
-m.start()
+# star = AStar(requiredData[0]["board"])
+# star = AStar(data[0]["board"])
+star = AStar()
+star.start()
 
 '''
 Relatorio de busca:
@@ -112,7 +115,7 @@ Relatorio de busca:
             [13, 9, 0, 7],
             [14, 11, 10, 15]
         ],
-    > Tempo de execução: 0.003942012786865234
+    > Tempo de execução: 0.003197193145751953
     > Nos visitados: 13
     > CPU em %: 0,0
     > Uso de memoria:{'total': 12250648576, 'available': 8434409472,
@@ -129,7 +132,7 @@ Relatorio de busca:
             [9, 10, 0, 11],
             [13, 14, 15, 12]
         ],
-    > Tempo de execução: 0.0008709430694580078
+    > Tempo de execução: 0.0009090900421142578
     > Nos visitados: 3
     > CPU em %: 0,0
     > Uso de memoria:{'total': 12250648576, 'available': 8454516736,
@@ -139,4 +142,19 @@ Relatorio de busca:
         'cached': 2441596928, 'shared': 396390400, 'slab': 219541504}
 
     --------------------------------------
+   entrada data[1]: 
+        [
+            [12, 1, 10, 2],
+            [7, 11, 4, 14],
+            [5, 0, 9, 15],
+            [8, 13, 6, 3],
+        ],
+    > Tempo de execução: 4.639868974685669
+    > Nos visitados: 3294
+    > CPU em %: 72,3
+    > Uso de memoria: {'total': 12250648576, 'available': 9224286208,
+     'percent': 24.7, 'used': 2286161920, 'free': 3736993792, 'active': 4169121792,
+      'inactive': 3487752192, 'buffers': 641716224,
+     'cached': 5585776640, 'shared': 415293440, 'slab': 519520256}
+
 '''
