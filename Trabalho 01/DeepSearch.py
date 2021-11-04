@@ -1,14 +1,14 @@
-from queue import Queue
 from entity.utils.BoardUtil import BoardUtil
 from entity.Game import Game
 from entity.utils.enums import Direction
-from entity.Position import Position
+from tests.data import *
+import psutil
 import time
 
 
 class DeepSearch:
-    def __init__(self):
-        self.game = Game()
+    def __init__(self, initialBoard=[]):
+        self.game = Game(initialBoard)
         self.checkStack = []
         self.listVisited = list()
         self.index = 0
@@ -50,15 +50,17 @@ class DeepSearch:
 
             self.index = 0
 
-            for  direction in Direction:
+            for direction in Direction:
                 if(isFound):
                     break
                 isFound = self.moveAndCheck(currentNode, direction)
 
         time1 = time.time()
         print("----Finalizado----")
-        print(f"foram realizado {self.game.getCountMove()} movimentos!")
+        print(f"Foram realizado {self.game.getCountMove()} movimentos!")
         print("Tempo de execucao: ", time1-time0)
+        print(f"CPU em %: {psutil.cpu_percent()}")
+        print(f"Uso de memoria: {psutil.virtual_memory()._asdict()}")
 
 
 ds = DeepSearch(requiredData[0]["board"])
