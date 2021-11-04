@@ -52,8 +52,10 @@ class GreedySearch2:
             self.heap) != 0 else self.nodeStackBackup.pop()
 
         """Esvazia a heap e armazenar em uma pilha para resolver futuros conflitos"""
-        while len(self.heap) != 0:
-            self.nodeStackBackup.append(self.heap.pop()[1])
+        length = len(self.heap) - 1
+        while length >= 0:
+            self.nodeStackBackup.append(self.heap.pop(length)[1])
+            length -= 1
 
         self.listVisited.append(currentNode)
         self.game.printNodeAndInformation(currentNode)
@@ -97,8 +99,8 @@ class GreedySearch2:
         print(f"Uso de memoria: {psutil.virtual_memory()._asdict()}")
 
 
-m = GreedySearch2(requiredData[0]["board"])
-# m = GreedySearch2(data[0]["board"])
+# m = GreedySearch2(requiredData[0]["board"])
+m = GreedySearch2(data[1]["board"])
 # m = GreedySearch2()
 m.start()
 
