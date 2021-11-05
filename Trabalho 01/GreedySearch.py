@@ -8,7 +8,7 @@ import time
 import psutil
 
 
-class GreedySearch2:
+class GreedySearch:
     def __init__(self, initialBoard=[]):
         self.game = Game(initialBoard)
         self.nodeStackBackup = list()
@@ -99,9 +99,9 @@ class GreedySearch2:
         print(f"Uso de memoria: {psutil.virtual_memory()._asdict()}")
 
 
-# m = GreedySearch2(requiredData[0]["board"])
-m = GreedySearch2(data[1]["board"])
-# m = GreedySearch2()
+# m = GreedySearch(requiredData[0]["board"])
+m = GreedySearch(data[1]["board"])
+# m = GreedySearch()
 m.start()
 
 '''
