@@ -41,5 +41,5 @@ Nesta pasta há arquivos ".py", que representão cada uma das busca solicitada p
 | A\*                   | AStar.py        |
 
 
-Para executar qualquer algoritmo execute `python nome-da-busca.py` e tenha certeza de estar usando python em sua versão 3.
+Para executar qualquer algoritmo execute `python3 nome-da-busca.py` e tenha certeza de estar usando python em sua versão 3.
 
