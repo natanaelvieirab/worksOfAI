@@ -1,5 +1,4 @@
 from entity.Board import Board
-from entity.Position import Position
 from entity.utils.BoardUtil import BoardUtil
 from entity.utils.functions import isOdd, convert_board_in_list
 

@@ -1,6 +1,8 @@
 from entity.Game import Game
 from entity.utils.enums import Direction
 from entity.utils.BoardUtil import BoardUtil
+from heuristics.ManhattanDistance import manhattanDistance
+from heuristics.NumberOfPiecesOutPlace import numberOfPiecesOutPlace
 from heapq import heappush, heappop
 from tests.data import *
 import itertools
@@ -15,18 +17,6 @@ class GreedySearch:
         self.listVisited = list()
         self.heap = []
 
-    def manhattanDistance(self, nodeCurrent):
-        length = len(nodeCurrent)
-        node = list(itertools.chain(*nodeCurrent))
-
-        total = sum(
-            abs((val - 1) % length - i % length) +
-            abs((val - 1)//length - i//length)
-            for i, val in enumerate(node) if val
-        )
-
-        return total
-
     def moveAndCheck(self, node, direction: Direction) -> bool:
         nodeMoved = BoardUtil.tryMove(node, direction)
 
@@ -40,8 +30,7 @@ class GreedySearch:
             return True
 
         # valor da heurística do nó n até um nó objetivo (distancia em linha reta no caso de distancias espaciais)
-        h = self.manhattanDistance(nodeMoved)
-
+        h = manhattanDistance(nodeMoved)
         heappush(self.heap, (h, nodeMoved))
 
         return isFound

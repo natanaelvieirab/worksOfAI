@@ -1,5 +1,4 @@
 from random import choice
-from entity.Position import Position
 from entity.utils.const import BLANK_SYMBOL
 
 
