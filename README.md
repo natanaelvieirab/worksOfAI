@@ -2,15 +2,15 @@
 
 # Trabalhos de I.A.
 
-Aqui consta a relação dos trabalhos academicos realizados na disciplina de inteligência artificial (IA), desenvolvidos no 2º semestre de 2021, e ministrada pelo professor José Wellington.
+Aqui consta a relação dos trabalhos acadêmicos realizados na disciplina de inteligência artificial (I.A.), desenvolvidos no 2º semestre de 2021, e ministrada pelo professor José Wellington.
 
 ## Detalhes
+
 Os trabalhos estão organizados em pastas, e esses são os links para facilitar a navegação:
 
-* [Trabalho 01](/Trabalho%2001); <br/>
-  **Descrição:** resolver o jogo dos 15, utilizando os seguintes algorimos:
-    * Busca em Largura;
-    * Busca em Profunda;
-    * Busca Gulosa;
-    * A*;
-
+- [Trabalho 01](/Trabalho%2001); <br/>
+  **Descrição:** resolver o jogo dos 15, utilizando os seguintes algoritmos:
+  - Busca em Largura;
+  - Busca em Profunda;
+  - Busca Gulosa;
+  - A\*;
