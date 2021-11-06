@@ -22,13 +22,15 @@ class DeepSearch:
 
         self.qtdGeneratedNodes += 1
 
-        if (nodeMoved not in self.listVisited):
-            self.checkStack.insert(self.index, nodeMoved)
-            self.index += 1
-            self.listVisited.append(nodeMoved)
-            self.qtdStoredNodes += 1
-            self.game.printNodeAndInformation(nodeMoved)
+        if (nodeMoved in self.listVisited):
+            return False
 
+        self.checkStack.insert(self.index, nodeMoved)
+        self.index += 1
+        self.listVisited.append(nodeMoved)
+        self.qtdStoredNodes += 1
+        self.game.printNodeAndInformation(nodeMoved)
+        
         isFound = self.game.isCheckIfFinalState(nodeMoved)
         return isFound
 
@@ -75,4 +77,6 @@ class DeepSearch:
 
 
 ds = DeepSearch(requiredData[0]["board"])
+# ds = DeepSearch(data[0]["board"])
+# ds = DeepSearch(data[1]["board"])
 ds.start()

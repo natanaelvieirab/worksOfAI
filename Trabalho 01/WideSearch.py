@@ -23,11 +23,13 @@ class WideSearch:
         
         self.qtdGeneratedNodes += 1
 
-        if (nodeMoved not in self.listVisited):
-            self.checkQueue.put(nodeMoved)
-            self.listVisited.append(nodeMoved)
-            self.qtdStoredNodes += 1
-            self.game.printNodeAndInformation(nodeMoved)
+        if (nodeMoved in self.listVisited):
+            return False
+
+        self.checkQueue.put(nodeMoved)
+        self.listVisited.append(nodeMoved)
+        self.qtdStoredNodes += 1
+        self.game.printNodeAndInformation(nodeMoved)
 
         isFound = self.game.isCheckIfFinalState(nodeMoved)
         return isFound
@@ -53,7 +55,7 @@ class WideSearch:
         isFound = self.game.isCheckIfFinalState(currentNode)
 
         while(not isFound and not self.checkQueue.empty()):
-            currentNode = self.checkQueue.get()  # removendo o primeiro elemento da fila
+            currentNode = self.checkQueue.get() 
 
             for direction in Direction:
                 if(isFound):
@@ -75,6 +77,7 @@ class WideSearch:
 
 ws = WideSearch(requiredData[0]["board"])
 # ws = WideSearch(data[0]["board"])
+# ws = WideSearch(data[1]["board"])
 ws.start()
 
 '''
