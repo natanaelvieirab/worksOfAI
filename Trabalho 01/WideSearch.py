@@ -13,23 +13,26 @@ class WideSearch:
         self.game = Game(initialBoard)
         self.checkQueue = Queue()
         self.listVisited = list()
+        self.qtdGeneratedNodes = 0
+        self.qtdStoredNodes = 0
 
     def moveAndCheck(self, node, direction: Direction) -> bool:
         nodeMoved = BoardUtil.tryMove(node, direction)
         if(nodeMoved == None):
             return False
-
-        isFound = self.game.isCheckIfFinalState(nodeMoved)
+        
+        self.qtdGeneratedNodes += 1
 
         if (nodeMoved not in self.listVisited):
             self.checkQueue.put(nodeMoved)
             self.listVisited.append(nodeMoved)
+            self.qtdStoredNodes += 1
             self.game.printNodeAndInformation(nodeMoved)
 
+        isFound = self.game.isCheckIfFinalState(nodeMoved)
         return isFound
 
     def start(self):
-
         currentNode = self.game.getInitialState()
 
         print("Tabuleiro Inicial:")
@@ -44,6 +47,9 @@ class WideSearch:
 
         self.checkQueue.put(currentNode)
         self.listVisited.append(currentNode)
+        self.qtdGeneratedNodes += 1
+        self.qtdStoredNodes += 1
+
         isFound = self.game.isCheckIfFinalState(currentNode)
 
         while(not isFound and not self.checkQueue.empty()):
@@ -56,15 +62,19 @@ class WideSearch:
 
         time1 = time.time()
 
-        print("----Finalizado----")
-        print(f"Foram realizado {self.game.getCountMove()} movimentos!")
-        print("Tempo de execucao: ", time1-time0)
+        print("-------Finalizado------")
+        print(f"Foram realizados {self.game.getCountMove()} movimentos!")
+
+        print(f"Quantidade de nós Gerados: {self.qtdGeneratedNodes}")
+        print(f"Quantidade de nós Armazenados: {self.qtdStoredNodes}")
+        
+        print("Tempo de execução: ", time1 - time0)
         print(f"CPU em %: {psutil.cpu_percent()}")
-        print(f"Uso de memoria: {psutil.virtual_memory()._asdict()}")
+        print(f"Uso de memória: {psutil.virtual_memory()._asdict()}")
 
 
-# ws = WideSearch(requiredData[0]["board"])
-ws = WideSearch(data[0]["board"])
+ws = WideSearch(requiredData[0]["board"])
+# ws = WideSearch(data[0]["board"])
 ws.start()
 
 '''

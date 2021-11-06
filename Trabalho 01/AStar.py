@@ -4,7 +4,6 @@ from entity.utils.BoardUtil import BoardUtil
 from heuristics.ManhattanDistance import manhattanDistance
 from heapq import heappush, heappop
 from tests.data import *
-import itertools
 import time
 import psutil
 
@@ -15,11 +14,26 @@ class AStar:
         self.nodeStackBackup = list()
         self.listVisited = list()
         self.heap = []
+        self.qtdGeneratedNodes = 0
+        self.qtdStoredNodes = 0
+
+    def addNewNode(self, node):
+        h = manhattanDistance(node)
+        g = len(node)  # custo do caminho do nó inicial até o nó n
+        f = g+h  
+
+        heappush(self.heap, (f, node))
+        self.qtdStoredNodes += 1
 
     def moveAndCheck(self, node, direction: Direction) -> bool:
         nodeMoved = BoardUtil.tryMove(node, direction)
 
-        if(nodeMoved == None or (nodeMoved in self.listVisited)):
+        if(nodeMoved == None):
+            return False
+
+        self.qtdGeneratedNodes += 1
+        
+        if(nodeMoved in self.listVisited):
             return False
 
         isFound = self.game.isCheckIfFinalState(nodeMoved)
@@ -28,13 +42,7 @@ class AStar:
             self.game.printNodeAndInformation(nodeMoved)
             return True
 
-        # valor da heurística do nó n até um nó objetivo (distancia em linha reta no caso de distancias espaciais)
-        h = manhattanDistance(nodeMoved)
-        g = len(nodeMoved)  # custo do caminho do nó inicial até o nó n
-        f = g+h  # custo total
-
-        heappush(self.heap, (f, nodeMoved))
-
+        self.addNewNode(nodeMoved)
         return isFound
 
     def getBestWay(self):
@@ -68,6 +76,8 @@ class AStar:
             return
 
         heappush(self.heap, (16, currentNode))
+        self.qtdStoredNodes += 1
+        self.qtdGeneratedNodes += 1
 
         isFound = self.game.isCheckIfFinalState(currentNode)
 
@@ -85,14 +95,18 @@ class AStar:
 
         print("----Finalizado----")
         print(f"Foram realizado {self.game.getCountMove()} movimentos!")
-        print("Tempo de execucao: ", time1-time0)
+
+        print(f"Quantidade de nós Gerados: {self.qtdGeneratedNodes} ")
+        print(f"Quantidade de nós Armazenados: {self.qtdStoredNodes} ")
+        
+        print("Tempo de execução: ", time1-time0)
         print(f"CPU em %: {psutil.cpu_percent()}")
-        print(f"Uso de memoria: {psutil.virtual_memory()._asdict()}")
+        print(f"Uso de memória: {psutil.virtual_memory()._asdict()}")
 
 
-# star = AStar(requiredData[0]["board"])
+star = AStar(requiredData[0]["board"])
 # star = AStar(data[0]["board"])
-star = AStar()
+# star = AStar()
 star.start()
 
 '''

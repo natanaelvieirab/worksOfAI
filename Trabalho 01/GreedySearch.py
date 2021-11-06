@@ -2,10 +2,8 @@ from entity.Game import Game
 from entity.utils.enums import Direction
 from entity.utils.BoardUtil import BoardUtil
 from heuristics.ManhattanDistance import manhattanDistance
-from heuristics.NumberOfPiecesOutPlace import numberOfPiecesOutPlace
 from heapq import heappush, heappop
 from tests.data import *
-import itertools
 import time
 import psutil
 
@@ -16,22 +14,33 @@ class GreedySearch:
         self.nodeStackBackup = list()
         self.listVisited = list()
         self.heap = []
+        self.qtdGeneratedNodes = 0
+        self.qtdStoredNodes = 0
+
+    def addNewNode(self, node):
+        h = manhattanDistance(node)
+        heappush(self.heap, (h, node))
+        self.qtdStoredNodes += 1
+
 
     def moveAndCheck(self, node, direction: Direction) -> bool:
         nodeMoved = BoardUtil.tryMove(node, direction)
 
-        if(nodeMoved == None or (nodeMoved in self.listVisited)):
+        if(nodeMoved == None):
             return False
 
+        self.qtdGeneratedNodes += 1
+        
+        if(nodeMoved in self.listVisited):
+            return False
+        
         isFound = self.game.isCheckIfFinalState(nodeMoved)
 
         if isFound:
             self.game.printNodeAndInformation(nodeMoved)
             return True
 
-        # valor da heurística do nó n até um nó objetivo (distancia em linha reta no caso de distancias espaciais)
-        h = manhattanDistance(nodeMoved)
-        heappush(self.heap, (h, nodeMoved))
+        self.addNewNode(nodeMoved)
 
         return isFound
 
@@ -66,6 +75,8 @@ class GreedySearch:
             return
 
         heappush(self.heap, (2, currentNode))
+        self.qtdStoredNodes += 1
+        self.qtdGeneratedNodes += 1
 
         isFound = self.game.isCheckIfFinalState(currentNode)
 
@@ -83,13 +94,17 @@ class GreedySearch:
 
         print("----Finalizado----")
         print(f"Foram realizado {self.game.getCountMove()} movimentos!")
-        print("Tempo de execucao: ", time1-time0)
+
+        print(f"Quantidade de nós Gerados: {self.qtdGeneratedNodes} ")
+        print(f"Quantidade de nós Armazenados: {self.qtdStoredNodes} ")
+        
+        print("Tempo de execução: ", time1 - time0)
         print(f"CPU em %: {psutil.cpu_percent()}")
-        print(f"Uso de memoria: {psutil.virtual_memory()._asdict()}")
+        print(f"Uso de memória: {psutil.virtual_memory()._asdict()}")
 
 
-# m = GreedySearch(requiredData[0]["board"])
-m = GreedySearch(data[1]["board"])
+m = GreedySearch(requiredData[0]["board"])
+# m = GreedySearch(data[1]["board"])
 # m = GreedySearch()
 m.start()
 
