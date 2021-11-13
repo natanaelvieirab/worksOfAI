@@ -1,4 +1,4 @@
-class Population:
+class Individual:
     def __init__(self, identification, value):
         self._identification = identification
         self._value = value
