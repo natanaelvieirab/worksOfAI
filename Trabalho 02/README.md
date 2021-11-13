@@ -20,7 +20,7 @@ Clone este repositorio em sua maquina, dentro da pasta **Trabalho 02**, rode o s
 - value: número decimal;
 - identification : representação em binário do _value_ ;
 
-**Operation**: nesta classe esta presente todas as operações necessária que o algoritmo genético irá utilizar, as principais são:
+**Operações**: a  classe _Operation_ esta presente todas as operações necessária que o algoritmo genético irá utilizar, as principais são:
 
 - bestBoys : que irá obter os individuos mais significativos para realizar a operação de cross-over;
 - mutation: é responsável por realizar mutação nos individuos da geração;
