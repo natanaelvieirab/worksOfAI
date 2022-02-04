@@ -24,3 +24,10 @@ Os trabalhos estão organizados em pastas, e esses são os links para facilitar 
   - a taxa para o crossover deve ser de 60%;
   - a taxa de mutação deve ser de 1%;
   - executar somente em 5 gerações;
+
+- [Trabalho 04](/Trabalho%2002); <br/>
+**Descrição:**
+<br/>
+**Instruções:** 
+1. Instale o nltk em sua maquina, para instalar, execute `pip install nltk`; Outras formas de instalar verifique no site oficial [aqui](https://www.nltk.org/install.html).
+
