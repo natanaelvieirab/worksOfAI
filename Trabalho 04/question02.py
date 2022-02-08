@@ -19,60 +19,50 @@ def main():
 
     nameFile = ['apoloxi.txt', 'french-revolution.txt']
 
-    print("Iniciando treinamento para analisar o texto .")
-    print("Aguarde, isso pode demorar...")
-    
-    taggedSents = nltk.corpus.mac_morpho.tagged_sents() #
-    unigramTagger = nltk.tag.UnigramTagger(taggedSents) # treinando comportamento de tagger
-
     for name in nameFile:
-        analysisFile(name, absolutePath+"/Trabalho 04"+path+name, unigramTagger)
+        analysisFile(name, absolutePath+"/Trabalho 04"+path+name)
     
 
-def analysisFile(title, absolutePath, unigramTagger):
+def analysisFile(title, absolutePath):
     file = open(absolutePath, 'r')
 
     listTokens = list()
 
-    print("Arquivo '{0}'".format(title))
+    print(">> Arquivo '{0}' <<".format(title))
 
-    print("Iniciando...")
+    print("Quantidades SEM REPETIÇÕES !")
 
-    print("Analisando tipo de cada palavra (isso pode demorar)...")
+    entityWords = {'GPE': [], 'LOCATION': [], 'PERSON': []}
 
     for line in file:
         words = nltk.word_tokenize(line)
-        sentTokenized = unigramTagger.tag(words) 
+        sentTokenized = nltk.ne_chunk(nltk.pos_tag(words)) #unigramTagger.tag(words) 
 
-        listTokens += sentTokenized 
-        break # Remover caso deseje analisar mais de um paragrafo
+        quantEntity(sentTokenized, entityWords)
     
-    print("Iniciando contagem de entidades do tipo 'gpe','location' e 'person'")    
-    data = quantEntity(listTokens)
+    
+    print("Quantidade de entidades 'GPE' : {0} ;".format(len(entityWords['GPE'])))
+    print("Quantidade de entidades 'LOCATION' : {0} ;".format(len(entityWords['LOCATION'])))
+    print("Quantidade de entidades 'PERSON' : {0} ;".format(len(entityWords['PERSON'])))
 
-    print("Quantidade de entidades 'GPE' : {0} ;".format(data['gpe']))
-    print("Quantidade de entidades 'LOCATION' : {0} ;".format(data['location']))
-    print("Quantidade de entidades 'PERSON' : {0} ;".format(data['person']))
+    print("\n------------------------------------\n")
 
     file.close()
 
+def quantEntity(listTokens, entityWords):
+   
+    continuous_chunk = []
+    current_chunk = []
+    types = ['GPE','PERSON', 'LOCATION']
 
-def quantEntity(listTokens):
-    quantGpe = 0
-    quantLocation = 0
-    quantPerson = 0
+    for subtree in listTokens:
+        if type(subtree) == nltk.Tree and subtree.label() in types:
+            typeEntity = subtree.label()
+            word = " ".join([token for token, pos in subtree.leaves()])
 
-    for t in listTokens:
-        if(t[1] == 'GPE'):
-            quantGpe += 1
-        
-        elif(t[1] == 'LOCATION'):
-            quantLocation += 1
-        
-        elif(t[1] == 'PERSON'):
-            quantPerson += 1    
-                  
-    return {'gpe': quantGpe, 'location': quantLocation, 'person': quantPerson}
+            if(word not in entityWords[typeEntity]):
+                entityWords[typeEntity].append(word)
+
 
 
 main()
