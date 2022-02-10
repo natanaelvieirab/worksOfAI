@@ -1,5 +1,5 @@
-from cmath import log
 import nltk
+import math
 
 stopwords = []
 
@@ -22,7 +22,7 @@ def get_amount_terms_repetition(file):
     return repetition
 
 
-def get_term_frequency(repetition):
+def get_term_frequency(repetition: dict):
     number_words = len(repetition.keys())
     term_frequency = dict()
 
@@ -31,22 +31,6 @@ def get_term_frequency(repetition):
 
     return term_frequency
 
-'''
-def get_inverse_term_frequency(frequency_in_single_file):
-    fields = nltk.corpus.gutenberg.fields()
-    frequency_total = dict()
-
-    for field in fields:
-        frequency = get_term_frequency(field)
-
-        for key,_ in frequency:
-            if(frequency_total.get(key)):
-                frequency_total[key] += frequency[key]
-            else:
-                frequency_total[key] = frequency[key]
-
-    return 
-'''
 
 def init_downloads():
     nltk.download('gutenberg')
@@ -55,23 +39,66 @@ def init_downloads():
     stopwords = nltk.corpus.stopwords.words('english')
 
 
-def _create_documents_per_words(freq_matrix):
-    word_per_doc_table = {}
+def get_frequency_documents(files: list, repetition: dict) -> dict: 
+    frequency_documents = dict() #number of documents the word appears by word
 
-    for sent, f_table in freq_matrix.items():
-        for word, count in f_table.items():
-            if word in word_per_doc_table:
-                word_per_doc_table[word] += 1
-            else:
-                word_per_doc_table[word] = 1
+    for word in repetition:
+        frequency_documents[word] = 0
 
-    return word_per_doc_table
+    for file in files:
+        words = nltk.corpus.gutenberg.words(file)
+        for word in repetition:
+            if(word in words):
+                frequency_documents[word] += 1
+    return frequency_documents
 
 
-def calculate_tf_mult_idf(number_files):
-    term_frequency = 0
-    idf = log(1 + number_files, 1 + df(d, t))
-    return term_frequency * idf
+def calculate_idf(documents_number: int, frequency: int):
+    logaritmando = (1 + documents_number) / (1 + frequency)
+    idf = math.log10(logaritmando) + 1
+    return idf
+
+
+def get_inverse_document_frequency(documents_number: int, frequency_documents: dict):
+    inverse_document_frequency = dict()
+
+    for word in frequency_documents:
+        inverse_document_frequency[word] = calculate_idf(documents_number, frequency_documents[word])
+    
+    return inverse_document_frequency
+
+
+def calculate_tf_mult_idf(term_frequency: dict, inverse_document_frequency: dict):
+    tf_mult_idf = dict()
+    for word in term_frequency:
+        tf_mult_idf[word] = term_frequency[word] * inverse_document_frequency[word]
+        # print(f'tf= {term_frequency}; idf= f{inverse_document_frequency}; tf-idf= f{tf_mult_idf}' )
+    return tf_mult_idf
+
+
+def get_less_relevant(most_relevant_words: dict, term: str, frequency_term: float) -> str:
+    for word in most_relevant_words:
+        if(frequency_term > most_relevant_words[word]):
+            return word
+    return term
+
+
+def get_most_relevant_words(tf_mult_idf: dict, most_number = 5):
+    most_relevant_words = dict()
+
+    for word in tf_mult_idf:
+        if(len(most_relevant_words) < 5):
+            most_relevant_words[word] = tf_mult_idf[word]
+        
+        less_relevant = get_less_relevant(most_relevant_words, word, tf_mult_idf[word])
+
+        if(less_relevant != word): 
+            most_relevant_words.pop(less_relevant)
+            most_relevant_words[word] = tf_mult_idf[word]
+
+    print(most_relevant_words)
+    return most_relevant_words.values()
+
 
 def main():
     init_downloads()
@@ -80,15 +107,14 @@ def main():
     for file in files:
         repetition = get_amount_terms_repetition(file)
         term_frequency = get_term_frequency(repetition)
-        print(term_frequency)
 
-    # aplicate_TF_and_IDF()
+        frequency_documents = get_frequency_documents(files, repetition)
+        inverse_document_frequency = get_inverse_document_frequency(len(files), frequency_documents)
+        
+        tf_mult_idf = calculate_tf_mult_idf(term_frequency, inverse_document_frequency)
+        most_relevant_words = get_most_relevant_words(tf_mult_idf)
+        print('Palavras mais relevantes: ', most_relevant_words)
 
-    # Listem as 5 palavras mais relevantes de cada texto contido no corpus Gutemberg. 
-
-# def main():
-#     print(len(set(nltk.corpus.stopwords.words('english'))))
-#     print(len(nltk.corpus.stopwords.words('english')))
 
 if __name__ == "__main__":
     main()
